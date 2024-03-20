@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<body>
+    <p></p>
+    <script>
+        const loginData = {
+            username: 'ckankam',
+            password: 'passwo1%'
+  };
+  
+  fetch('http://localhost:3000/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(loginData),
+    credentials:"include",
+    headers: {
+        'Cookies':'cookies.txt',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then((data) => {
+      document.querySelector('p').textContent = data // Should print the response from the server
+    })
+    .catch((error) => {
+      console.error('Error during login:', error.message);
+    });
+  
+    </script>
+</body>

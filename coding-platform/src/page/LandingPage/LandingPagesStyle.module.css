@@ -1,0 +1,201 @@
+/* header section */
+.header{
+    height: 100vh;
+    z-index: 8;
+    contain: paint;
+}
+.backgroundImgContainer{
+    position: absolute;
+    top: 0;
+    z-index: -9;
+    left: 0;
+    right: 0;
+    animation: stick linear;
+    animation-timeline: view(y);
+    animation-: exit;
+    transform-origin: top;
+}
+.backgroundImgContainer::after{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.8);
+}
+.backgroundImgContainer img{
+    object-fit: cover;
+    object-position: center top;
+    width: 100%;
+    height: 100vh;
+}
+.openMessage{
+    display: flex;
+    padding-left: 15%;
+}
+.line{
+    width: 6px;
+    background: linear-gradient(180deg,black,orange,#b128e7,#646cff,black);
+    height: 75vh;
+    margin: 0 6% 0 0;
+    animation: line linear;
+    animation-timeline: view(y)
+}
+.openMessage h1{
+    font-size: 3.6em;
+    font-family: 'Work Sans',sans-serif;
+}
+.openMessage span{
+    color: gainsboro;
+    font-family: 'Work Sans',sans-serif;
+}
+.codeImageContainer{
+    border-radius: 20px;
+    contain: paint;
+    height: 30vh;
+}
+.codeImageContainer img{
+    height: 30vh;
+    width: auto;
+}
+.textHeaderContainer{
+    display: grid;
+}
+/* Navigation Bar styling */
+
+.navBarContainer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 25%;
+    display: grid;
+    background-color: #1f1f1f;
+    border-top-left-radius: 35px;
+    border-top-right-radius: 35px;
+}
+.scrollUpIndicator{
+    display: grid;
+    justify-content: center;
+    place-items: center;
+    padding: 10px;
+    gap: 5px;
+
+}
+.indicator{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    place-items: center;
+    justify-content: center;
+    border: 2px solid gainsboro;
+}
+.indicator:hover{
+    background-color: gray;
+}
+.indicator img{
+    animation: drop 2s ease-in 1s infinite;
+}
+.indicator img:hover{
+    animation-play-state: paused;
+}
+.scrollUpIndicator span{
+    font-size: medium;
+}
+.navBar{
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 10% 4px 10%;
+    align-self: end;
+}
+.navBar p{
+    font-family: 'Work Sans',sans-serif;
+    font-size: x-large;
+}
+.stick{
+    background-color: gainsboro;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    color: black;
+}
+.navBar div{
+    display: flex;
+    place-items: center;
+    gap: 10%;
+    font-weight: bold;
+}
+.navBar ul{
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+.navLink{
+    color: gainsboro;
+    cursor: pointer;
+    font-weight: normal;
+    display: flex;
+    place-items: center;
+}
+.navLink img{
+    width: 30px;
+    height: 30px;
+}
+.black{
+    color: black;
+}
+.tryNow{
+    padding: 5px 10px 5px 10px;
+    border: 2px solid gray;
+    display: flex;
+    place-items: center;
+}
+.tryNow:hover{
+    background-color: gainsboro;
+}
+.tryNow img{
+    width: 30px;
+    height: 30px;
+}
+@keyframes stick {
+    0%{
+        transform: translateY(-50%);
+    }
+    100%{
+        transform: translateY(50%);
+    }
+}
+@keyframes drop {
+    0%{
+        transform: translateY(0%);
+    }
+    80%{
+        transform: translateY(100%);
+    }
+    100%{
+        transform: translateY(0%);
+    }
+}
+@keyframes line {
+    65%{
+        background: linear-gradient(180deg,black,orange,#b128e7,#646cff,black);
+    }
+    75%{
+        background: linear-gradient(180deg,black,orange,#b128e7,black);
+    }
+    85%{
+        background: linear-gradient(180deg,black,orange,black);
+    }
+    100%{
+        background: linear-gradient(180deg,black,black);
+    }
+}
+@keyframes textAnime {
+    0%{
+
+    }
+}
