@@ -55,6 +55,7 @@
     contain: paint;
     height: 30vh;
     width: fit-content;
+
 }
 .codeImageContainer img{
     height: 30vh;
@@ -196,7 +197,7 @@
     animation: lineBG linear;
     animation-timeline: view(y)
 }
-.lineIDLEBG::after,.competitionLine::after {
+.lineIDLEBG::after,.competitionLine::after,.AILine::after {
     display: block;
     position: absolute;
     top: calc(50%); /* Half of the height */
@@ -251,7 +252,7 @@
     box-shadow: 0 0 10px 2px #1f1e1e;
     border: 1px solid #3b3a3a;
 }
-.codeCompetition{
+.codeCompetition,.aiContainer{
     display: flex;
     flex-direction: column;
     align-items: end;
@@ -260,11 +261,15 @@
     background-size: 50%;
     background-position: left 5vh;
 }
-.codeCompetitionMessage{
+.aiContainer{
+    background-image: url("./brain-black.svg");
+}
+.codeCompetitionMessage,.aiMessageContainer{
     display: flex;
     padding-right: 15%;
 }
-.competitionLine{
+
+.competitionLine,.AILine{
     position: relative;
     height: 60vh;
     width: 6px;
@@ -273,6 +278,9 @@
 }
 .competitionLine::after{
     content: url("./trophy.svg");
+}
+.AILine::after{
+    content: url("./brain.svg");
 }
 .codeCompetitionOptions{
     width: 100%;
@@ -306,6 +314,7 @@
     border-radius: 20px;
     transition: scale 0.4s ease-in-out;
     box-shadow: 0 0 10px 2px #1f1e1e;
+
 }
 .competitionBox:hover{
     scale: 1.03;
@@ -324,10 +333,15 @@
 }
 .competitionText{
     background-color: #212121;
+    font-family: "Work Sans", sans-serif;
+    padding: 10px 15px 0 15px ;
+}
+.competitionText span{
+    color: beige;
+    font-size: x-large;
+    font-weight: bold;
 }
 .competitionText p {
-    font-family: "Work Sans", sans-serif;
-    padding: 0 15px 0 15px ;
     font-size: medium;
 }
 
