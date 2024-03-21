@@ -2,27 +2,27 @@ import brandLogo from './logo.svg'
 import style from './LandingPagesStyle.module.css'
 import landingPage from './coding.jpg'
 import downArrow from './down-arrow.svg'
-import diagArrow from './diagonal-arrow.svg'
-import {useEffect,useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Link, NavLink} from "react-router-dom";
 import ArrowUp from "./ArrowUp.jsx";
 import codeSnippet from './code-snippet.png'
-import {create} from "zustand";
-const useStore = create((set)=>({
-    stickNavBar: false,
-    setStickNavBar: (value) => {
-            set({stickNavBar: value})
-    }
-}))
-
+import editor from './code-editor.png'
+import {motion, useInView} from "framer-motion";
+import AnimatedText from "./component/AnimatedText.jsx";
+import trophyImage from './trophy-colored.svg';
+import AnimateCard from "./component/AnimatedCard.jsx";
 export default function LandingPage(props){
     // const [stickNavBar,setStickNavBar] = useStore((state)=>
     //     [state.stickNavBar,state.setStickNavBar])
     const [stickNavBar,setStickNavBar] = useState(false)
+    const imageRef = useRef()
+    const messageRef = useRef()
+    const inView = useInView(imageRef,{once:false,margin:'-100px 0px'})
+    const messageInView = useInView(messageRef,{once:false,margin:'-200px 0px'})
     const [navLinkHover,setNavLinkHover] = useState(null)
     useEffect(()=>{
         window.addEventListener('scroll',()=>{
-            if(window.scrollY>window.innerHeight + 50){
+            if(window.scrollY>window.innerHeight){
                 setStickNavBar(true)
             }else{
                 setStickNavBar(false)
@@ -41,7 +41,7 @@ export default function LandingPage(props){
         }
     },[])
     function navLinkStyling({isActive,isPending}){
-        return `${style.navLink} ${stickNavBar?style.black:''}`;
+        return style.navLink;
     }
     function onMouseEnterLink(index){
         setNavLinkHover(index)
@@ -59,9 +59,9 @@ export default function LandingPage(props){
                         <div className={style.line}></div>
                         <div className={style.textHeaderContainer}>
                             <div>
-                                <h1>A New Way To Learn Code</h1>
+                                <h1>Improving Coding on the WEB</h1>
                                 <span>We provide the best tools for coding on the web. Advanced tools like Code Generation<br/>
-                                and a Code tutor to assis you in your skills development
+                                and a Code tutor to assist you in your skills development
                                 </span>
                             </div>
                             <div className={style.codeImageContainer}>
@@ -88,7 +88,7 @@ export default function LandingPage(props){
                                     ()=>{onMouseLeaveLink()}}>
                                     <NavLink to={value.link} className={navLinkStyling}>
                                         {value.name}<ArrowUp
-                                        color={navLinkHover===index ? '#646cff' : !stickNavBar ? 'gainsboro' : 'black'}/>
+                                        color={navLinkHover===index ? '#646cff' : 'gainsboro' }/>
                                     </NavLink>
                                 </li>
                             )
@@ -101,8 +101,53 @@ export default function LandingPage(props){
                 </nav>
             </div>
             <main>
-                <section>
-                    
+                <section className={style.onlineIDLE}>
+                    <div className={style.onlineIDLEMessage}>
+                        <div className={style.onlineIDLEContainer}>
+                            <div className={style.lineIDLEBG}></div>
+                        </div>
+                        <AnimatedText caption={'An Online Code Editor'}>
+                            <span>A new way to code in your browser, take programming exams<br/>
+                                    answer programming quizes</span>
+                        </AnimatedText>
+                    </div>
+                    <motion.div ref={imageRef}
+                                className={style.codeEditor}
+                                initial={{opacity: 0, y: 50, x: '-1%'}}
+                                animate={{opacity: inView ? 1 : 0, y: inView ? 0 : 50, x: '-5%'}}
+                                transition={{duration: 0.3}}
+                                style={{opacity:inView?1:0}}
+                    >
+                        <img src={editor} alt={'code editor'}/>
+                    </motion.div>
+                </section>
+                <section className={style.codeCompetition}>
+                    <div className={style.codeCompetitionMessage}>
+                        <AnimatedText caption={'Competitions'}>
+                            <span>Using daily quizes, competitive coding practice to promote<br/>
+                                    programming habit in individual</span>
+                        </AnimatedText>
+                        <div className={style.competitionLineContainer}>
+                            <div className={style.competitionLine}></div>
+                        </div>
+                    </div>
+                    <div className={style.codeCompetitionOptions}>
+                        <AnimateCard img={trophyImage} alt={'trophy'} message={
+                            'Elevate your coding skills to new heights with our thrilling coding competition! ' +
+                            'Designed for enthusiasts of all levels, from beginners to seasoned developers, ' +
+                            'this competition offers a dynamic platform to showcase your programming prowess.'}
+                        animate={'left'}/>
+                        <AnimateCard img={trophyImage} alt={'trophy'} message={
+                            'Elevate your coding skills to new heights with our thrilling coding competition! ' +
+                            'Designed for enthusiasts of all levels, from beginners to seasoned developers, ' +
+                            'this competition offers a dynamic platform to showcase your programming prowess.'}
+                                     animate={'center'}/>
+                        <AnimateCard img={trophyImage} alt={'trophy'} message={
+                            'Elevate your coding skills to new heights with our thrilling coding competition! ' +
+                            'Designed for enthusiasts of all levels, from beginners to seasoned developers, ' +
+                            'this competition offers a dynamic platform to showcase your programming prowess.'}
+                                     animate={'right'}/>
+                    </div>
                 </section>
             </main>
             <p>
