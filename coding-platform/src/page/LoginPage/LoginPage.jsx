@@ -5,7 +5,7 @@ import {Link, NavLink, useNavigate} from "react-router-dom";
 import Button from "./component/Button.jsx";
 import LoginLink from "./component/LoginLink.jsx";
 import google from './google.svg'
-import apple from './apple.svg'
+import microsoft from './microsoft.svg'
 import {useState} from "react";
 import errorSVG from './error.svg'
 export default function LoginPage(){
@@ -56,8 +56,8 @@ export default function LoginPage(){
                     <Button name={'login'} color={'forestgreen'} width={300}/>
                 </form>
                 <div className={style.altLabel}></div>
-                <LoginLink name={'Continue with Google'} image={google}/>
-                <LoginLink name={'Continue with Apple'} image={apple}/>
+                <LoginLink name={'Continue with Google'} image={google} path={'http://localhost:3000/auth/federated/google'}/>
+                <LoginLink name={'Continue with Microsoft'} image={microsoft} path={'http://localhost:3000/auth/federated/microsoft'}/>
                 <div className={style.createLink}>I do not have an account?<Link to={'/register'}>create new</Link></div>
             </main>
         </section>
