@@ -1,0 +1,92 @@
+.loginSection{
+    display: grid;
+    justify-content: center;
+    font-family: "Work Sans", sans-serif;
+
+}
+
+.main{
+    display: grid;
+    margin-top: 5vh;
+    grid-template-columns: 1fr;
+    width: fit-content;
+    gap: 2vh;
+}
+.main.animate{
+    animation: shake 0.5s ease-in;
+}
+.main p{
+    font-weight: bold;
+    font-size: 2.0rem;
+}
+.imageHolder{
+    justify-self: center;
+}
+.loginForm{
+    display: grid;
+    gap: 10px;
+}
+.forgotLink{
+    font-size: 1rem;
+    color: burlywood;
+    margin-top: 2vh;
+}
+.forgotLink:hover{
+    color: #7a654a;
+}
+.altLabel{
+    background-color: gray;
+    height: 1px;
+    width: 100%;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+    position: relative;
+}
+.altLabel::after{
+    content: 'Other login options';
+    font-size: small;
+    background-color: #1f1f1f;
+    padding-right: 10px;
+    padding-left: 10px;
+    color: whitesmoke;
+    position:absolute;
+    right: 50%;
+    top: 50%;
+    transform: translate(50%, -50%);
+}
+.errorPrompt{
+    display: flex;
+    place-items: center;
+    gap: 5px;
+    margin-left: 13px;
+}
+.errorPrompt img{
+    width: 13px;
+    height: 13px;
+}
+.errorPrompt span{
+    font-size: 0.7rem;
+    color: #f14e4e;
+}
+.createLink{
+    font-size: 0.85rem;
+}
+.createLink a{
+    margin-left: 5px;
+    color: #3dc43d;
+}
+.createLink a:hover{
+    color: #309630;
+}
+@keyframes shake {
+    0%,50%{
+        transform: translateX(-5%);
+    }
+    25%,75%{
+        transform: translateX(5%);
+    }
+    100%{
+        transform: translateX(0%);
+    }
+
+}

@@ -9,7 +9,7 @@ export default function AnimatedText(props){
         <motion.div className={style.IDLEMessage} ref={ref}
                     initial={{opacity: 0, y: 50}}
                     animate={{opacity: inView ? 1 : 0, y: inView ? 0 : 50}}
-                    transition={{duration: 0.5}}
+                    transition={{duration: 0.3}}
                     style={{opacity: inView ? 1 : 0}}
         >
             <div>

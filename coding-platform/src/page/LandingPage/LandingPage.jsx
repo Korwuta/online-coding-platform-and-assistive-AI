@@ -16,6 +16,8 @@ import quizSVG from './quiz.svg'
 import collaborationImage from './collaboration-image.jpg'
 import competitionImage from './competition-image.jpg'
 import quizImage from './quiz-image.jpg'
+import VerticalCard from "./component/VerticalCard.jsx";
+import LandScapeCard from "./component/LandScapeCard.jsx";
 export default function LandingPage(props){
     // const [stickNavBar,setStickNavBar] = useStore((state)=>
     //     [state.stickNavBar,state.setStickNavBar])
@@ -99,7 +101,7 @@ export default function LandingPage(props){
                             )
                         }
                         <li>
-                            <NavLink to={''} className={style.tryNow}>Try NOW
+                            <NavLink to={'/login'} className={style.tryNow}>Try NOW
                                 <ArrowUp color={'#646cff'}/></NavLink>
                         </li>
                     </ul>
@@ -112,8 +114,9 @@ export default function LandingPage(props){
                             <div className={style.lineIDLEBG}></div>
                         </div>
                         <AnimatedText caption={'An Online Code Editor'}>
-                            <span>A new way to code in your browser, take programming exams<br/>
-                                    answer programming quizes</span>
+                            <span>A new way to code in your browser. Writing, runing and debuging code<br/>
+                            in the browser made easier with an user interactive <br/>
+                            code editor</span>
                         </AnimatedText>
                     </div>
                     <motion.div ref={imageRef}
@@ -130,7 +133,7 @@ export default function LandingPage(props){
                     <div className={style.codeCompetitionMessage}>
                         <AnimatedText caption={'Competitions'}>
                             <span>Using daily quizes, competitive coding practice to promote<br/>
-                                    programming habit in individual</span>
+                                    programming habit in individuals</span>
                         </AnimatedText>
                         <div className={style.competitionLineContainer}>
                             <div className={style.competitionLine}></div>
@@ -167,8 +170,21 @@ export default function LandingPage(props){
                             <div className={style.AILine}></div>
                         </div>
                     </div>
-                    <div>
-
+                    <div className={style.aiOptions}>
+                        <div className={style.aiOption}>
+                            <VerticalCard caption={'Error Detection'} text={'Our cutting-edge machine learning system provides seamless detection' +
+                                'and resolution of logical errors and predictive inaccuracies in your' +
+                                ' Code Say goodbye to tedious error hunting and welcome effortless debugging with our AI tool'}/>
+                            <VerticalCard caption={'Code Generation'} text={'Discover a game-changing solution for' +
+                                ' your development endeavors with our pioneering code generation AI. Designed to' +
+                                ' streamline your coding process, our AI effortlessly crafts precise and optimized code,' +
+                                ' tailored to your given problem' +
+                                'Embrace efficiency and unleash the full potential of your development team with our' +
+                                ' intelligent code generation technology.'}/>
+                        </div>
+                        <div className={style.landScapeDiv}>
+                            <LandScapeCard/>
+                        </div>
                     </div>
                 </section>
             </main>

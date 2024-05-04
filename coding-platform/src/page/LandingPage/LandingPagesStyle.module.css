@@ -22,7 +22,7 @@
     height: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(0,0,0,0.8);
+    background:linear-gradient(rgba(0,0,0,1),rgba(0,0,0,0.5),rgba(0,0,0,0.1));
 }
 .backgroundImgContainer img{
     object-fit: cover;
@@ -261,9 +261,8 @@
     background-size: 50%;
     background-position: left 5vh;
 }
-.aiContainer{
-    background-image: url("./brain-black.svg");
-}
+
+
 .codeCompetitionMessage,.aiMessageContainer{
     display: flex;
     padding-right: 15%;
@@ -314,6 +313,7 @@
     border-radius: 20px;
     transition: scale 0.4s ease-in-out;
     box-shadow: 0 0 10px 2px #1f1e1e;
+    background-color: #1f1e21;
 
 }
 .competitionBox:hover{
@@ -332,7 +332,7 @@
     animation-timeline: view(y);
 }
 .competitionText{
-    background-color: #212121;
+
     font-family: "Work Sans", sans-serif;
     padding: 10px 15px 0 15px ;
 }
@@ -344,7 +344,79 @@
 .competitionText p {
     font-size: medium;
 }
+.errorDetection{
+    width: 40vw;
+    contain: paint;
+    padding-top: 2vh;
+    height: fit-content;
+    border: 1px solid #3b3a3a;
+    border-radius: 20px;
+    background-color: #1f1e21;
+    box-shadow: 0 0 10px 2px #1f1e1e;
+}
+.errorImageContainer{
+    padding-left: 15%;
+}
+.errorText{
+    font-size: larger;
+    font-family: "Work Sans", sans-serif;
+    padding: 2vh 5% 5vh 7% ;
+    color: #c2bdbd;
+}
+.errorImageContainer div{
+    border-top-left-radius: 25px;
+    contain: paint;
+    box-shadow: 0 -1px 50px -10px #d96b6b;
+}
+.aiOptions{
+    width: 100%;
+    display: grid;
+    justify-content: stretch;
+    margin-bottom: 5vh;
+}
+.aiOption{
+    display: flex;
+    justify-content: space-around;
+}
+.aiContainer{
+    background-image: url("./brain-black.svg");
+}
+.landScapeDiv{
+    display: flex;
+    justify-content: center;
+    margin: 0 10% 0 10%;
+}
+.landScapeCardContainer{
+    display: flex;
+    width: 100%;
+    gap: 5%;
+    border: 1px solid #3b3a3a;
 
+    background-color: #1f1e21;
+    font-family: "Work Sans", sans-serif;
+    border-radius: 25px;
+    transform: translateY(-10%);
+
+    padding: 5vh 5% 5vh 5%;
+}
+.landScapeCardContainer img{
+    width: 50%;
+    height: auto;
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+.tutorImage{
+    width: 60%;
+    color: gainsboro;
+    font-size: large;
+}
+.tutorCaption{
+    text-align: center;
+    width: 40%;
+    font-size: xx-large;
+    font-weight: bolder;
+    align-self: center;
+}
 @keyframes stick {
     0%{
         transform: translateY(-50%);

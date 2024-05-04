@@ -62,7 +62,6 @@ app.get('/success', authenticate, (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-
     res.send('Login page');
 });
 

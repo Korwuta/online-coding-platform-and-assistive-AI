@@ -18,7 +18,7 @@ if(fs.existsSync(Path.join(__dirname,'logins'))){
 app = express()
 app.use(morgan('short'))
 app.use(cors({
-    origin:/http:\/\/127.0.0.1:\d+/,
+    origin:"http://localhost:5173",
     credentials: true
 }))
 app.use(express.static(Path.join(__dirname,'public')))
@@ -45,20 +45,24 @@ app.get('/resetpassword',resetPassword)
 app.get('/',(req,res)=>{
 
 })
+app.get('/login')
 app.get('/home',(req,res)=>{
     if(req.isAuthenticated()){
-        if(!dailyLogins[`Day${getDate()}`]){
-            dailyLogins[`Day${getDate()}`] = []
-        }
-        if(!dailyLogins[`Day${getDate()}`].includes(req.user)){
-            dailyLogins[`Day${getDate()}`].push(req.user)
-            fs.writeFileSync('logins',JSON.stringify(dailyLogins))
-        }
-        res.json(req.user)
+        // if(!dailyLogins[`Day${getDate()}`]){
+        //     dailyLogins[`Day${getDate()}`] = []
+        // }
+        // if(!dailyLogins[`Day${getDate()}`].includes(req.user)){
+        //     dailyLogins[`Day${getDate()}`].push(req.user)
+        //     fs.writeFileSync('logins',JSON.stringify(dailyLogins))
+        // }
+        res.json({message:"login successful",data:req.user})
     }else{
         res.redirect('/login')
     }
 })
+app.get('/unsuccessful', (req, res) => {
+    res.status(401).send({message:'Incorrect username or password'})
+});
 app.post('/reset',)
 app.listen(3000,(req,res)=>{
     console.log('server running on 3000')
