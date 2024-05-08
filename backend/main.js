@@ -42,7 +42,6 @@ app.use(flash())
 app.use('/auth',login)
 app.use('/register',register)
 app.use('/resetpassword',resetPassword)
-app.get('/resetpassword',resetPassword)
 app.get('/',(req,res)=>{
 
 })
@@ -64,7 +63,6 @@ app.get('/home',(req,res)=>{
 app.get('/unsuccessful', (req, res) => {
     res.status(401).send({message:'Incorrect username or password'})
 });
-app.post('/reset',)
 app.listen(3000,(req,res)=>{
     console.log('server running on 3000')
 })

@@ -17,7 +17,7 @@
 }
 .main p{
     font-weight: bold;
-    font-size: 2.0rem;
+    font-size: 1.8rem;
 }
 .imageHolder{
     justify-self: center;
@@ -77,6 +77,28 @@
 }
 .createLink a:hover{
     color: #309630;
+}
+.mailSent{
+    display: grid;
+    place-items: center;
+    gap: 10px;
+}
+.mailSent div{
+    padding: 20px;
+    height: fit-content;
+    border: 1px solid gray;
+    border-radius: 50%;
+}
+.mailSent img{
+    display: block;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+}
+.mailSent label{
+    width: 350px;
+    text-align: center;
+    font-size: 0.9rem;
 }
 @keyframes shake {
     0%,50%{

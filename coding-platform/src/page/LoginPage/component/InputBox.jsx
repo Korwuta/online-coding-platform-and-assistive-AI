@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import {useEffect, useRef, useState} from 'react'
 import styles from './input-box-style.module.css'
 
 // props = {type:'type of input box', placeholder:'hint text'}
@@ -9,6 +9,7 @@ export default function InputBox(props){
     let setFocus = ()=>{
         thisInput.current.focus()
         setStateFocus(true)
+
     }
     let onBlur = ()=>{
         setStateFocus(false)
@@ -18,11 +19,12 @@ export default function InputBox(props){
     }
     let onValueChange = (e)=>{
         setInputValue(e.target.value);
-        props.value(e.target.value);
+        props.value(e.target.value)
     }
     return(
         <div className={`${styles.inputBox} ${isFocus?styles.active:''}`} onClick={setFocus}
-             style={{height:`${props.height}px`}}>
+             style={{height:`${props.height}px`,width:`${props.width}px`}}>
+
             <div className={styles.labelContainer} >
                 <label
                     className={`${styles.label} ${isFocus ? styles.active : inputValue ? styles.inactive : ''}`}

@@ -8,13 +8,16 @@ import google from './google.svg'
 import microsoft from './microsoft.svg'
 import {useState} from "react";
 import errorSVG from './error.svg'
+import LoadingBar from "../../LoadingBar.jsx";
 export default function LoginPage(){
     const [username,setUsername] = useState("")
     const [password,setPassword] = useState("")
     const [loginError,setLoginError] = useState(false)
+    const [load,setLoad] = useState(false)
     const navigate = useNavigate()
     function onLogin(e){
         setLoginError(false)
+        setLoad(true)
         e.preventDefault()
         const requestBody = {username:username,password:password}
         const request = fetch('http://localhost:3000/auth/login',{
@@ -33,10 +36,12 @@ export default function LoginPage(){
         })
             .then((data) => {
                 setLoginError(false)
+                setLoad(false)
                 navigate('/home',{state:data})
             })
             .catch((error) => {
                 setLoginError(true)
+                setLoad(false)
             });
     }
     return(
@@ -52,7 +57,7 @@ export default function LoginPage(){
                     {loginError&&<div className={style.errorPrompt}>
                         <img src={errorSVG} alt={''}/><span>Incorrect username or password</span>
                     </div>}
-                    <Link to={'/'} className={style.forgotLink}>Forgot password?</Link>
+                    <Link to={'/reset'} className={style.forgotLink}>Forgot password?</Link>
                     <Button name={'login'} color={'forestgreen'} width={300}/>
                 </form>
                 <div className={style.altLabel}></div>
@@ -60,6 +65,7 @@ export default function LoginPage(){
                 <LoginLink name={'Continue with Microsoft'} image={microsoft} path={'http://localhost:3000/auth/federated/microsoft'}/>
                 <div className={style.createLink}>I do not have an account?<Link to={'/register'}>create new</Link></div>
             </main>
+            {load&&<LoadingBar/>}
         </section>
     )
 }
