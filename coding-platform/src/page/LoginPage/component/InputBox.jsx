@@ -31,7 +31,7 @@ export default function InputBox(props){
                     style={{fontSize: `${0.30 * props.height}px`}}>{props.placeholder}</label>
             </div>
             <input ref={thisInput} type={props.type} onBlur={onBlur} onFocus={onClick} onChange={onValueChange}
-                   required/>
+                   required disabled={props.disabled}/>
         </div>
     )
 }

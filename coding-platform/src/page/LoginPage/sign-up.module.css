@@ -1,0 +1,17 @@
+.name{
+    display: flex;
+}
+.span{
+    font-size: 0.8rem;
+    text-align: center;
+    margin-bottom: 3vh;
+    color: #5bdc5b;
+    animation: enter 0.2s ease-in-out;
+}
+
+@keyframes enter {
+    0%{
+        transform: translateX(20px);
+        opacity: 0.6;
+    }
+}

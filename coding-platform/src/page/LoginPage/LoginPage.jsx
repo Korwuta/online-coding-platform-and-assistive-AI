@@ -29,8 +29,10 @@ export default function LoginPage(){
                 'Content-Type': 'application/json',
             },
         }).then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+            if(!response.ok){
+                return response.json().then((data)=>{
+                    throw new Error(data.message)
+                })
             }
             return response.json();
         })

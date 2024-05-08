@@ -8,9 +8,10 @@ import {useState} from "react";
 import mailSVG from './mail.svg'
 import VerificationInputBox from "./component/VerificationInputBox.jsx";
 import doneSVG from './done.svg'
+import LoadingBar from "../../LoadingBar.jsx";
 
 const passwordRegex = /^(?=.*\d)(?=.*["#$%&'()*+,\-./:;<=>?@\[^\]_`{|}~])["\w#$%&'()*+,\-./:;<=>?@\[^\]_`{|}~]+$/
-export default function NewPasswordReset(){
+export default function NewPasswordReset({isReset}){
     const {resetToken} = useParams()
     const [resetError,setResetError] = useState(false)
     const [errorMessage,setErrorMessage] = useState('')
@@ -18,6 +19,7 @@ export default function NewPasswordReset(){
     const [errAnimate, setErrAnimate] = useState(false)
     const [confirmPassword,setConfirmPassword] = useState("")
     const [resetSuccess,setResetSuccess] = useState(false)
+    const [load,setLoad] = useState(false)
     const navigate = useNavigate()
 
     async function onSubmit(e){
@@ -29,10 +31,12 @@ export default function NewPasswordReset(){
 
             (hasPasswordFormat||setErrorMessage('Invalid password format'))&&
             (newAndConfirmMatch||setErrorMessage(('confirm password does not match password')))
-            setResetError(passwordRegex.test(newPassword)||newPassword!==confirmPassword);
-            setErrAnimate(passwordRegex.test(newPassword)||newPassword!==confirmPassword)
+            setResetError(!hasPasswordFormat||!newAndConfirmMatch);
+            setErrAnimate(!hasPasswordFormat||!newAndConfirmMatch);
             if(hasPasswordFormat&&newAndConfirmMatch){
-                fetch(`http://localhost:3000/resetpassword/token/${resetToken}`,{
+                fetch(`${
+                    isReset?'http://localhost:3000/resetpassword/token/':'http://localhost:3000/register/registeruser/'
+                }${resetToken}`,{
                     method:'POST',
                     headers:{
                         'Cookies':'cookies.txt',
@@ -41,15 +45,19 @@ export default function NewPasswordReset(){
                     body:JSON.stringify({newPassword})
                 }).then((response)=>{
                     if(!response.ok){
-                        throw new Error(`HTTP error! : status ${response.status}`)
+                        return response.json().then((data)=>{
+                            throw new Error(data.message)
+                        })
                     }
                     return response.json()
                 }).then((data)=>{
+                    setResetError(false)
+                    setErrAnimate(false)
                     setResetSuccess(true)
                 }).catch((err)=>{
                     setErrorMessage(err.message)
                     setResetError(true)
-                    setErrAnimate(resetError)
+                    setErrAnimate(true)
                 })
             }
         },10)
@@ -62,7 +70,7 @@ export default function NewPasswordReset(){
                 </div>
                 {
                     !resetSuccess ? <>
-                        <p>Set New Password</p>
+                        <p>Set Password</p>
                         <form className={style.loginForm} onSubmit={onSubmit}>
                             <VerificationInputBox type={'password'} placeholder={'new password'} height={50}
                                                   value={setNewPassword}/>
@@ -74,13 +82,15 @@ export default function NewPasswordReset(){
                             <Button name={'confirm'} color={'forestgreen'} width={300}/>
                         </form>
                     </> : <div className={style.mailSent}>
-                        <p>Reset Successful</p>
-                        <img src={doneSVG} alt={'mail'}/>
-                        <label>Your password has been successfully reset,<br/>
+                        <p>{isReset?'Reset Successful':'Account Registered!'}</p>
+                        <div><img src={doneSVG} alt={'mail'}/></div>
+                        <label>{isReset?'Your password has been successfully reset.':
+                            'Your account has been successfully created.'}<br/>
                             <Link to={'/login'} className={style.forgotLink}>back to login</Link></label>
                     </div>
                 }
             </main>
+            {load&&<LoadingBar/>}
         </section>
     )
 }
