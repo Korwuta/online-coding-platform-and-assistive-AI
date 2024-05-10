@@ -1,75 +1,74 @@
-const express = require('express');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const session = require('express-session');
-const morgan = require("morgan");
+const {Pool} = require('pg')
+const crypt = require('crypto')
+const {data} = require("express-session/session/cookie");
+const pool = new Pool({
+    user:process.env['DATABASE_USERNAME'],
+    host:process.env['DATABASE_HOST'],
+    database:'master',
+    password:process.env['DATABASE_PASSWORD'],
+    max: 20,
+    port:process.env['DATABASE_PORT'],
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+})
 
-const app = express();
-
-app.use(morgan('short'));
-// Use session to persist login state
-app.use(session({ secret: 'your-secret-key', resave: true, saveUninitialized: true }));
-app.use(express.js)
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-// Example user data (replace this with your own user data source)
-const users = [
-    { id: 1, username: 'user1', password: 'password1' },
-    { id: 2, username: 'user2', password: 'password2' },
-];
-
-// Serialize and deserialize user for session persistence
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser((id, done) => {
-    const user = users.find((u) => u.id === id);
-    done(null, user);
-});
-
-// Local strategy for username/password authentication
-passport.use(
-    new LocalStrategy((username, password, done) => {
-        const user = users[0]
-        if (user) {
-            return done(null, user);
-        }
-        return done(null, false, { message: 'Incorrect username or password' });
-    })
-);
-
-// Authentication middleware
-const authenticate = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        req.authentication = true;
-        return next();
+async function createUserLocal({id,firstName,lastName,username,email,password,createdAt,displayName,salt}){
+    const res = await pool.
+    query(
+        'INSERT INTO "Users"(id,first_name,last_name,username,email,password_hash,created_at,display_name,salt) VALUES($1,$2,$3,$4,$5,$6,CURRENT_TIMESTAMP,$7,$8) RETURNING *',
+        [id,firstName,lastName,username,email,password,displayName,salt])
+    return res.rows[0]
+}
+async function createUserNonLocal({issuer,subject,displayName}){
+    let id = crypt.randomUUID()
+    const userInserted = await pool.
+        query('INSERT INTO "Users"(id,display_name,created_at) VALUES($1,$2,CURRENT_TIMESTAMP)',
+        [id,displayName])
+    if(userInserted){
+        const res = await pool.
+        query(
+            'INSERT INTO "FederatedAuth"(user_id,issuer,subject) VALUES($1,$2,$3) RETURNING *',
+            [id,issuer,subject])
+        return res.rows[0]
     }
-    res.status(401).send('Unauthorized');
-};
 
-// Routes
-app.post(
-    '/login',
-    passport.authenticate('local', {
-        successRedirect: '/success',
-        failureRedirect: '/login',
-    })
-);
-
-app.get('/success', authenticate, (req, res) => {
-    console.log(req.isAuthenticated())
-    res.send('You are authenticated!');
-});
-
-app.get('/login', (req, res) => {
-    res.send('Login page');
-});
-
-app.get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/login');
-});
-
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
+}
+async function findAuthentication({subject,issuer}){
+    const res = await pool.
+    query(
+        'SELECT user_id FROM "FederatedAuth" WHERE subject = $1 AND issuer=$2',
+        [subject,issuer])
+    return res.rows[0]
+}
+async function getUserById(id){
+    const res = await pool.
+    query(
+        'SELECT id,display_name FROM "Users" WHERE id=$1',
+        [id])
+    return res.rows[0]
+}
+async function getUserWithUsername(username){
+    const res = await pool.
+    query(
+        'SELECT id,display_name,salt,email,password_hash FROM "Users" WHERE username=$1',
+        [username])
+    return res.rows[0]
+}
+async function updatePassword(username,password_hash,salt){
+    const res = await pool.
+    query(
+        `UPDATE "Users" 
+        SET password_hash=$1, salt=$2,last_changed_password=(SELECT password_hash FROM "Users" WHERE username=$3),
+        last_salt=(SELECT salt FROM "Users" WHERE username=$3) 
+        WHERE username=$3`,
+        [password_hash,salt,username])
+    return res.rows[0]
+}
+module.exports = {
+    createUserLocal,
+    createUserNonLocal,
+    findAuthentication,
+    getUserById,
+    getUserWithUsername,
+    updatePassword
+}

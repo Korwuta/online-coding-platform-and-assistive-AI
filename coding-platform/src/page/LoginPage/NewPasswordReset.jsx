@@ -34,6 +34,7 @@ export default function NewPasswordReset({isReset}){
             setResetError(!hasPasswordFormat||!newAndConfirmMatch);
             setErrAnimate(!hasPasswordFormat||!newAndConfirmMatch);
             if(hasPasswordFormat&&newAndConfirmMatch){
+                setLoad(true)
                 fetch(`${
                     isReset?'http://localhost:3000/resetpassword/token/':'http://localhost:3000/register/registeruser/'
                 }${resetToken}`,{
@@ -54,10 +55,12 @@ export default function NewPasswordReset({isReset}){
                     setResetError(false)
                     setErrAnimate(false)
                     setResetSuccess(true)
+                    setLoad(false)
                 }).catch((err)=>{
                     setErrorMessage(err.message)
                     setResetError(true)
                     setErrAnimate(true)
+                    setLoad(false)
                 })
             }
         },10)

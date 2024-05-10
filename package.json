@@ -17,6 +17,9 @@
     "passport-google-oidc": "^0.1.0",
     "passport-local": "^1.0.0",
     "passport-microsoft": "^2.1.0",
+    "pg": "^8.11.5",
+    "rate-limiter-flexible": "^5.0.3",
+    "redis": "^4.6.13",
     "vite": "^5.1.6"
   }
 }

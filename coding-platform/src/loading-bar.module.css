@@ -1,86 +1,90 @@
-/* styles.module.css */
-
-:global {
-    /* Global styles */
+.div{
+    display: flex;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    background-color: rgb(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+}
+.cube {
+    margin: auto;
+    font-size: 24px;
+    height: 1em;
+    width: 1em;
+    scale: 1.5;
+    position: relative;
+    transform: rotatex(30deg) rotatey(45deg);
+    transform-style: preserve-3d;
+    z-index: 2;
+    animation: cube-spin 1.5s infinite ease-in-out alternate;
 }
 
-.spinner {
+.side {
     position: absolute;
-    bottom: 3vh;
-    left: 50%;
-    z-index: 1;
-    height: 35px;
-    width: 35px;
-    transform: translate(-100%, -50%);
-    transition: all 0.5s ease-in;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    right: 0;
+    transform-style: preserve-3d;
 }
-
-.ball {
+.side::before {
+    content: "";
     position: absolute;
-    display: block;
-    left: 30px;
-    width: 7px;
-    height: 7px;
-    border-radius: 6px;
-    transition: all 0.5s;
-    animation: circleRotate 4s both infinite;
-    transform-origin: 0 250% 0;
-
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    right: 0;
+    background-color: currentcolor;
+    transform: translatez(0.5em);
+    animation: cube-explode 1.5s infinite ease-in-out;
+    opacity: 0.5;
 }
 
-@keyframes circleRotate {
+.side:nth-child(1) {
+    transform: rotatey(90deg);
+}
+
+.side:nth-child(2) {
+    transform: rotatey(180deg);
+}
+
+.side:nth-child(3) {
+    transform: rotatey(270deg);
+}
+
+.side:nth-child(4) {
+    transform: rotatey(360deg);
+}
+
+.side:nth-child(5) {
+    transform: rotatex(90deg);
+}
+
+.side:nth-child(6) {
+    transform: rotatex(270deg);
+}
+
+@keyframes cube-spin {
     0% {
-        transform: rotate(0deg);
+        transform: rotatex(30deg) rotatey(45deg);
     }
     100% {
-        transform: rotate(1440deg);
+        transform: rotatex(30deg) rotatey(405deg);
     }
 }
-
-.ball-1 {
-    z-index: -1;
-    background-color: forestgreen;
-    animation-timing-function: cubic-bezier(0.5, 0.3, 0.9, 0.9);
-}
-
-.ball-2 {
-    z-index: -2;
-    background-color:forestgreen;
-    animation-timing-function: cubic-bezier(0.5, 0.6, 0.9, 0.9);
-}
-
-.ball-3 {
-    z-index: -3;
-    background-color: forestgreen;
-    animation-timing-function: cubic-bezier(0.5, 0.9, 0.9, 0.9);
-}
-
-.ball-4 {
-    z-index: -4;
-    background-color:forestgreen;
-    animation-timing-function: cubic-bezier(0.5, 1.2, 0.9, 0.9);
-}
-
-.ball-5 {
-    z-index: -5;
-    background-color: forestgreen;
-    animation-timing-function: cubic-bezier(0.5, 1.5, 0.9, 0.9);
-}
-
-.ball-6 {
-    z-index: -6;
-    background-color: forestgreen;
-    animation-timing-function: cubic-bezier(0.5, 2.1, 0.9, 0.9);
-}
-
-.ball-7 {
-    z-index: -7;
-    background-color: forestgreen;
-    animation-timing-function: cubic-bezier(0.5, 2.4, 0.9, 0.9);
-
-}
-
-.ball-8 {
-    z-index: -8;
-    background-color:forestgreen;
+@keyframes cube-explode {
+    0% {
+        transform: translatez(0.5em);
+    }
+    50% {
+        transform: translatez(0.75em);
+    }
+    100% {
+        transform: translatez(0.5em);
+    }
 }

@@ -9,7 +9,8 @@ const crypt = require('crypto')
 const fs = require('fs')
 const Path = require('path')
 const __ = require("lodash/fp/__");
-
+const db = require('../database')
+const {data} = require("express-session/session/cookie");
 //variables
 let users = JSON.parse(fs.readFileSync(Path.join(__dirname,'../users')).toString())
 let auth = []
@@ -22,22 +23,25 @@ passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 passport.deserializeUser((id, done) => {
-    done(null, users.find((user)=>{
-        return user.id === id
-    }));
+    db.getUserById(id).then((row)=>{
+        done(null,{id:row.id,displayName:row.display_name})
+    })
 });
 passport.use(new LocalStrategy((username, password, done) => {
-    let user = users.find((user)=>{
-        return user.username === username;
-    })
-    if(!user){
-        return done(null,false,{message:'incorrect username or password'})
-    }
-    crypt.pbkdf2(password,Buffer.from(user.salt.data),252000,50,'sha256',(err,hashcode)=>{
-        if(crypt.timingSafeEqual(hashcode,Buffer.from(user.password.data))){
-            return done(null,user)
+    db.getUserWithUsername(username).then((row)=>{
+        if(!row){
+            return done(null,false,{message:'incorrect username or password'})
         }
-        return done(null,false,{message:'incorrect username or password'})
+        crypt.pbkdf2(password,Buffer.from(row.salt),252000,50,'sha256',(err,hashcode)=>{
+            if(crypt.timingSafeEqual(hashcode,Buffer.from(row.password_hash))){
+                return done(null,{id:row.id,displayName:row.displayName})
+            }
+            return done(null,false,{message:'incorrect username or password'})
+        })
+
+    }).catch((err)=>{
+        console.log(err)
+        done(null,false,{message:'server error'})
     })
 }));
 passport.use(new GoogleStrategy({
@@ -46,31 +50,7 @@ passport.use(new GoogleStrategy({
     callbackURL: 'http://localhost:3000/auth/oauth2/redirect/google',
     scope: [ 'profile' ]
 }, (issuer,profile,done)=>{
-    console.log('hi')
-    let authUser = auth.find((user)=>{
-        return user.subject === profile.id && user.issuer === issuer;
-    })
-    console.log("first " + authUser)
-    if(!authUser){
-        let id = crypt.randomUUID().toString()
-        users.push({
-            id:id,
-            username: profile.displayName,
-        })
-        auth.push({
-            id:id,
-            subject:profile.id,
-            issuer:issuer,
-        })
-        fs.writeFileSync('users',JSON.stringify(users))
-        fs.writeFileSync('authentication-table',JSON.stringify(auth))
-        done(null,{id:id, username: profile.displayName})
-    }else{
-        let user = users.find((user)=>{
-            return user.id === authUser.id;
-        })
-        done(null,user)
-    }
+    federatedLogin(profile,issuer,done)
 }));
 passport.use(new MicrosoftStrategy({
     clientID: process.env['MICROSOFT_CLIENT_ID'],
@@ -78,38 +58,21 @@ passport.use(new MicrosoftStrategy({
     callbackURL: "http://localhost:3000/auth/microsoft/callback",
     scope: ['user.read'],
 },(accessToken,refreshToken,profile,done)=>{
-    let authUser = auth.find((user)=>{
-        return user.subject === profile.id
-    })
-    console.log("first " + authUser)
-    if(!authUser){
-        let id = crypt.randomUUID().toString()
-        users.push({
-            id:id,
-            username: profile.displayName,
-        })
-        auth.push({
-            id:id,
-            subject:profile.id,
-        })
-        fs.writeFileSync('users',JSON.stringify(users))
-        fs.writeFileSync('authentication-table',JSON.stringify(auth))
-        done(null,{id:id, username: profile.displayName})
-    }else{
-        let user = users.find((user)=>{
-            return user.id === authUser.id;
-        })
-        done(null,user)
-    }
+    federatedLogin(profile,'microsoft',done)
 }));
 
 
 //post routes
-app.post('/login', passport.authenticate('local',{
-    successRedirect: '/home',
-    failureRedirect: '/unsuccessful',
-    failureFlash: true
-}));
+app.post('/login', (req,res)=>{
+    passport.authenticate('local',(err,user,info)=>{
+        if(err||!user){
+            return res.redirect('/unsuccessful')
+        }
+        req.login(user,(err)=>{
+            return res.redirect('/home')
+        })
+    })(req,res);
+});
 
 
 //get routes
@@ -125,5 +88,28 @@ app.get('/microsoft/callback',passport.authenticate('microsoft',{
     successRedirect: process.env['WEBROWSER_HOME_PATH'],
     failureRedirect: process.env['WEBROWSER_LOGIN_PATH'],
 }))
+
+async function federatedLogin(profile,issuer,done){
+    db.findAuthentication({subject: profile.id,issuer}).then(async (row)=>{
+        let id = row?row.user_id:''
+        if(!row){
+            const res = await db.createUserNonLocal(
+                {issuer,subject:profile.id,displayName:profile.displayName})
+            id = res.user_id
+        }
+        db.getUserById(id).then((row)=>{
+            if(!row){
+                return done(null,false,{message:'user not found'})
+            }
+            done(null,row)
+        }).catch((err)=>{
+            done(null,false,{message:'error occurred while fetching'})
+        })
+    }).catch((err)=>{
+        console.log(err)
+        done(null,false,{message:err})
+    })
+
+}
 
 module.exports = app;

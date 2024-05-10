@@ -12,6 +12,7 @@ import errorSVG from './error.svg'
 import LoadingBar from "../../LoadingBar.jsx";
 import VerificationInputBox from "./component/VerificationInputBox.jsx";
 import mailSVG from "./mail.svg";
+import UsernameValidateField from "./component/UsernameValidateField.jsx";
 
 const nameReGex = /[a-zA-Z]{2,}/
 const emailRegex = /^[^\s@]+@[^\s@].[^\s@]/
@@ -19,14 +20,15 @@ export default function LoginPage(){
     const [firstName,setFirstName] = useState("")
     const [lastName,setLastName] = useState("")
     const [email,setEmail] = useState('')
+    const [username,setUsername] = useState('')
     const [signUpError,setSignUpError] = useState(false)
-    const [validDetails,setValidDetails] = useState({name:false,email:false})
+    const [validDetails,setValidDetails] = useState({name:false,email:false,username:false})
     const [load,setLoad] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const [temp,setTemp] = useState(false)
     const navigate = useNavigate()
     function onCreate(e){
         let hasNameFormat = nameReGex.test(firstName)&&nameReGex.test(lastName)
-
         setSignUpError(false)
         e.preventDefault()
         setTimeout(()=>{
@@ -36,44 +38,51 @@ export default function LoginPage(){
                     name:false,
                 }))
                 setSignUpError(!hasNameFormat)
+
                 setErrorMessage(!nameReGex.test(firstName)?'Invalid first name':'Invalid last name')
             }else{
                 setValidDetails((prevState)=>({
                     ...prevState,
                     name:true,
                 }))
-                if(emailRegex.test(email)&&validDetails.name){
-                    setLoad(true)
-                    const requestBody = {firstName,lastName,email}
-                    const request = fetch('http://localhost:3000/register/registeruser',{
-                        method: 'POST',
-                        body: JSON.stringify(requestBody),
-                        headers: {
-                            'Cookies':'cookies.txt',
-                            'Content-Type': 'application/json',
-                        },
-                    }).then((response) => {
-                        if(!response.ok){
-                            return response.json().then((data)=>{
-                                throw new Error(data.message)
-                            })
-                        }
-                        return response.json();
-                    })
-                        .then((data) => {
-                            setSignUpError(false)
-                            setEmail(data.email)
-                            setLoad(false)
-                            setValidDetails((prevState)=>({
-                                ...prevState,
-                                email:true,
-                            }))
+                setValidDetails((prevState)=>({
+                    ...prevState,
+                    username: temp
+                }))
+                if(emailRegex.test(email)&&validDetails.username){
+                    if(validDetails.username){
+                        setLoad(true)
+                        const requestBody = {firstName,lastName,email,username}
+                        const request = fetch('http://localhost:3000/register/registeruser',{
+                            method: 'POST',
+                            body: JSON.stringify(requestBody),
+                            headers: {
+                                'Cookies':'cookies.txt',
+                                'Content-Type': 'application/json',
+                            },
+                        }).then((response) => {
+                            if(!response.ok){
+                                return response.json().then((data)=>{
+                                    throw new Error(data.message)
+                                })
+                            }
+                            return response.json();
                         })
-                        .catch((error) => {
-                            setSignUpError(true)
-                            setLoad(false)
-                            setErrorMessage(error.message)
-                        });
+                            .then((data) => {
+                                setSignUpError(false)
+                                setEmail(data.email)
+                                setLoad(false)
+                                setValidDetails((prevState)=>({
+                                    ...prevState,
+                                    email:true,
+                                }))
+                            })
+                            .catch((error) => {
+                                setSignUpError(true)
+                                setLoad(false)
+                                setErrorMessage(error.message)
+                            });
+                    }
                 }
             }
 
@@ -81,7 +90,7 @@ export default function LoginPage(){
     }
     return(
         <section className={style.loginSection}>
-            <main className={`${style.main} ${signUpError&&style.animate}`}>
+            <main className={`${style.main} ${signUpError && style.animate}`}>
                 <div className={style.imageHolder}>
                     <img src={brandLogo} alt={"logo"}/>
                 </div>
@@ -98,12 +107,19 @@ export default function LoginPage(){
                             </>
                             {
                                 validDetails.name && <>
-                            <span className={style2.span}
-                                  onMouseDown={() => {
-                                      setValidDetails((prevState) => ({
-                                          ...prevState, name: false
-                                      }))
-                                  }}>Edit name</span>
+                                    <span className={style2.span}
+                                          onMouseDown={() => {
+                                              setValidDetails((prevState) => ({
+                                                  ...prevState, name: false,username: false
+                                              }))
+                                              setTemp(false)
+                                          }}>Edit name</span>
+                                    <label>Set Username</label>
+                                    <UsernameValidateField value={setUsername} valid={setTemp}/>
+                                </>
+                            }
+                            {
+                                validDetails.username && <>
                                     <label>Enter Email</label>
                                     <InputBox type={'email'} placeholder={'email'} height={50} value={setEmail}
                                               disabled={validDetails.email}/></>
@@ -122,9 +138,11 @@ export default function LoginPage(){
                         <label>A mail has been sent to your email address {email || ''}, check your mail to confirm
                             mail address</label>
                     </div>
+
                 }
+                <br/><br/>
             </main>
-            {load && <LoadingBar/>}
+            {load&&<LoadingBar/>}
         </section>
     )
 }
