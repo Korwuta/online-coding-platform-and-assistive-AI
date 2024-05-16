@@ -9,7 +9,7 @@ const crypt = require('crypto')
 const fs = require('fs')
 const Path = require('path')
 const __ = require("lodash/fp/__");
-const db = require('../database')
+const db = require('../gateways/database')
 const {data} = require("express-session/session/cookie");
 //variables
 let users = JSON.parse(fs.readFileSync(Path.join(__dirname,'../users')).toString())
@@ -24,6 +24,9 @@ passport.serializeUser((user, done) => {
 });
 passport.deserializeUser((id, done) => {
     db.getUserById(id).then((row)=>{
+        if(!row){
+            done(null,false,{message:'user not found'})
+        }
         done(null,{id:row.id,displayName:row.display_name})
     })
 });
@@ -78,20 +81,20 @@ app.post('/login', (req,res)=>{
 //get routes
 app.get('/federated/google', passport.authenticate('google'));
 app.get('/oauth2/redirect/google', passport.authenticate('google', {
-    successRedirect: process.env['WEBROWSER_HOME_PATH'],
-    failureRedirect: process.env['WEBROWSER_LOGIN_PATH'],
+    successRedirect: process.env.WEBROWSER_LOGIN_PATH,
+    failureRedirect:process.env.WEBROWSER_LOGIN_PATH,
 }));
 app.get('/federated/microsoft',passport.authenticate('microsoft',{
     prompt:'select_account',
 }));
 app.get('/microsoft/callback',passport.authenticate('microsoft',{
-    successRedirect: process.env['WEBROWSER_HOME_PATH'],
-    failureRedirect: process.env['WEBROWSER_LOGIN_PATH'],
+    successRedirect: process.env.WEBROWSER_LOGIN_PATH,
+    failureRedirect: process.env.WEBROWSER_LOGIN_PATH,
 }))
 
 async function federatedLogin(profile,issuer,done){
     db.findAuthentication({subject: profile.id,issuer}).then(async (row)=>{
-        let id = row?row.user_id:''
+        let id = row&&row.user_id
         if(!row){
             const res = await db.createUserNonLocal(
                 {issuer,subject:profile.id,displayName:profile.displayName})

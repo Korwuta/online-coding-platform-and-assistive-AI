@@ -1,0 +1,22 @@
+.searchBox{
+    display: flex;
+    border: 1px solid #505050;
+    place-items: center;
+    gap: 5px;
+    padding-left: 7px;
+    padding-right: 5px;
+    border-radius: 12px;
+    background-color: #1f1f1f;
+}
+.searchBox img{
+    width: 30px;
+    height: 30px;
+}
+.searchBox input{
+    border: none;
+    outline: none;
+    font-size: 1.05rem;
+    color: gainsboro;
+    font-family: "Work Sans", sans-serif;
+    background-color: transparent;
+}

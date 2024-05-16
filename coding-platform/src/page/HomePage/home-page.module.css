@@ -1,0 +1,115 @@
+.section{
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+    padding-top: 3vh;
+    font-family: "Work Sans", sans-serif;
+}
+.dashboard{
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.content{
+    background-color: #1a1a1a;
+    border-top-left-radius: 20px;
+    width: 100%;
+    box-shadow: 0 0 2px 0 black;
+    contain: paint;
+    height: 97vh;
+    animation: appear 0.5s ease;
+
+}
+.topBar{
+    height: 8.5vh;
+    border-bottom: 1px solid #313030;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px 0 20px;
+    place-items: center;
+}
+.logoContainer{
+    display: flex;
+    place-items: center;
+    gap: 20px;
+    font-size: 1.7rem;
+    border-bottom: 1px solid #313030;
+    padding-left: 35px;
+    height: 8.5vh;
+}
+.i{
+    height: 88.5vh;
+    overflow-y: scroll;
+}
+.i p{
+    margin: 0;
+}
+.topMenu ul{
+    margin-top: 5vh;
+    list-style: none;
+    padding-left: 28px;
+}
+
+.topMenu ul img{
+    width: 22px;
+    height: 22px;
+}
+.navLink{
+    display: flex;
+    padding-left: 7px;
+    place-items: center;
+    gap:10px;
+    font-size: 1.1rem;
+    padding-top: 1.5vh;
+    padding-bottom: 1.5vh;
+    color: gainsboro;
+}
+.navLink:hover{
+    color: white;
+}
+.navLink.active{
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    background-color: #1a1a1a;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+}
+.leftOption{
+    display: flex;
+    gap: 25px;
+    place-items: center;
+}
+.name{
+    display: flex;
+    place-items: center;
+    gap: 10px;
+    padding:5px 10px 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 10px;
+}
+.name label{
+    font-size: 1.05rem;
+    cursor: pointer;
+}
+.name div{
+    display: grid;
+}
+.name:hover{
+    background-color: #1f1f1f;
+
+}
+.name div>:last-child{
+    font-size: 0.9rem;
+    color: gray;
+}
+@keyframes appear {
+    0%{
+        scale: 1.2;
+        opacity: 0.8;
+    }
+}

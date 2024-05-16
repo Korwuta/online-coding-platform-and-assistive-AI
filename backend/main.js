@@ -10,6 +10,7 @@ const register = require('./authentication/register')
 const resetPassword = require('./authentication/reset')
 const flash = require('express-flash')
 const fs = require('fs')
+const avatar = require("./uploads/initials-generator");
 //variable declaration
 let dailyLogins = {}
 if(fs.existsSync(Path.join(__dirname,'logins'))){
@@ -34,7 +35,7 @@ app.use((err, req, res, next)=>{
 app.use(session({
     secret:'korwutacollins12345',
     saveUninitialized:true,
-    resave:true
+    resave:true,
 }))
 app.use(passport.initialize())
 app.use(passport.session())
@@ -42,10 +43,7 @@ app.use(flash())
 app.use('/auth',login)
 app.use('/register',register)
 app.use('/resetpassword',resetPassword)
-app.get('/',(req,res)=>{
 
-})
-app.get('/login')
 app.get('/home',(req,res)=>{
     if(req.isAuthenticated()){
         // if(!dailyLogins[`Day${getDate()}`]){
@@ -57,8 +55,14 @@ app.get('/home',(req,res)=>{
         // }
         res.json({message:"login successful",data:req.user})
     }else{
-        res.redirect('/login')
+        res.redirect('/unsuccessful')
     }
+})
+app.get('/logout',(req,res)=>{
+    req.logout((err) =>{
+        if (err) { return res.status(500).json({message:'log out failed'}); }
+        res.json({message:'user log out'});
+    });
 })
 app.get('/unsuccessful', (req, res) => {
     res.status(401).send({message:'Incorrect username or password'})
@@ -66,7 +70,13 @@ app.get('/unsuccessful', (req, res) => {
 app.listen(3000,(req,res)=>{
     console.log('server running on 3000')
 })
-
+app.get('/profile/:displayName',(req,res)=>{
+    let initials = req.params.displayName.split(' ').map((word)=>word[0].toUpperCase()).join('')
+    if(!fs.existsSync(Path.join(__dirname,`/public/profile/${initials}.png`))){
+        avatar(initials)
+    }
+    res.sendFile(Path.join(__dirname,`/public/profile/${initials}.png`))
+})
 function getDate(){
     let date = new Date(Date.now())
     return `${date.getDay().toString().padStart(2,'0')}${date.getMonth().toString().padStart(2,'0')}${date.getFullYear()}`

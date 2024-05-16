@@ -1,0 +1,46 @@
+.notification{
+    padding: 5px;
+    border: 1px solid #505050;
+    border-radius: 50%;
+    background-color: #1f1f1f;
+    position: relative;
+}
+.notification:hover{
+    background-color: #383838;
+}
+.notification img{
+    width: 35px;
+    height: 35px;
+    display: block;
+    text-align: center;
+    transform-origin: 50% 0;
+}
+.notificationExist{
+    animation: notiShake 1s ease;
+}
+.notification div{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #f14e4e;
+    position: absolute;
+    right: 1px;
+    top: 1px;
+}
+@keyframes notiShake {
+    0%{
+        transform: rotate(10deg);
+    }
+    25%{
+        transform: rotate(-10deg);
+    }
+    50%{
+        transform: rotate(10deg);
+    }
+    75%{
+        transform: rotate(-10deg);
+    }
+    100%{
+        transform: rotate(0deg);
+    }
+}

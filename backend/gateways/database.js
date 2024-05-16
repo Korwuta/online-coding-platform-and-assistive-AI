@@ -1,6 +1,5 @@
 const {Pool} = require('pg')
 const crypt = require('crypto')
-const {data} = require("express-session/session/cookie");
 const pool = new Pool({
     user:process.env['DATABASE_USERNAME'],
     host:process.env['DATABASE_HOST'],
@@ -58,7 +57,7 @@ async function updatePassword(username,password_hash,salt){
     const res = await pool.
     query(
         `UPDATE "Users" 
-        SET password_hash=$1, salt=$2,last_changed_password=(SELECT password_hash FROM "Users" WHERE username=$3),
+        SET password_hash=$1,salt=$2,last_changed_password=(SELECT password_hash FROM "Users" WHERE username=$3),
         last_salt=(SELECT salt FROM "Users" WHERE username=$3) 
         WHERE username=$3`,
         [password_hash,salt,username])

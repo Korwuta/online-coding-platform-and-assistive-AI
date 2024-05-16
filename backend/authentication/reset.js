@@ -4,17 +4,13 @@ const fs = require('fs')
 const Path = require('path')
 const nodemailer = require('nodemailer')
 const {padEnd} = require("lodash/string");
-const mailer = require('../mail-sender')
+const mailer = require('../gateways/mail-sender')
 const jwt = require('jsonwebtoken')
-const db = require('../database')
-const {getUserWithUsername} = require("../database");
+const db = require('../gateways/database')
+const {getUserWithUsername} = require("../gateways/database");
 const {has} = require("lodash/object");
-const usedToken = new Set()
 app.post('/token/:resetToken',(req
                        ,res)=>{
-    if(usedToken.has(req.params.resetToken)){
-        return res.status(403).json({message:'link expired'})
-    }
     jwt.verify(req.params.resetToken,process.env.RESET_SECRET,{},(err,decode)=>{
         if(err){
             return res.status(403).json({message:'link expired'})
@@ -31,12 +27,11 @@ app.post('/token/:resetToken',(req
             }
             let salt = crypt.randomBytes(30)
             crypt.pbkdf2(newPassword,Buffer.from(row.salt),252000,50,'sha256',(err,hashcode)=>{
-                if(crypt.timingSafeEqual(hashcode,row.password_hash)){
+                if(crypt.timingSafeEqual(hashcode,Buffer.from(row.password_hash))){
                     return res.status(401).json({message:'Cannot use previous password'})
                 }
                 crypt.pbkdf2(newPassword,salt,252000,50,'sha256',(err,hashcode)=>{
-                    db.updatePassword(row.username,hashcode,salt).then(()=>{
-                        usedToken.add(req.params.resetToken)
+                    db.updatePassword(decode.username,hashcode,salt).then((data)=>{
                         return res.json({message:'password reset successful'})
                     }).catch((err)=>{
                         console.log(err)

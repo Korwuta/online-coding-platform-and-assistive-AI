@@ -3,11 +3,12 @@ const app = require('express').Router()
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
 const users = []
-const mailer = require('../mail-sender')
+const mailer = require('../gateways/mail-sender')
 const {token} = require("morgan");
-const db = require('../database')
+const db = require('../gateways/database')
 
-const usedToken = new Set()
+
+
 app.post('/registeruser/:token',(req, res)=>{
     let {newPassword} = req.body
     if(!(newPassword||"").

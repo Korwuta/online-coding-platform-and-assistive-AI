@@ -6,7 +6,7 @@ import Button from "./component/Button.jsx";
 import LoginLink from "./component/LoginLink.jsx";
 import google from './google.svg'
 import microsoft from './microsoft.svg'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import errorSVG from './error.svg'
 import LoadingBar from "../../LoadingBar.jsx";
 export default function LoginPage(){
@@ -15,6 +15,27 @@ export default function LoginPage(){
     const [loginError,setLoginError] = useState(false)
     const [load,setLoad] = useState(false)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        fetch('http://localhost:3000/home',{
+            method:'GET',
+            credentials:'include',
+        }).then((response) => {
+            if(!response.ok){
+                return response.json().then((data)=>{
+                    throw new Error(data.message)
+                })
+            }
+            return response.json();
+        })
+            .then((data) => {
+                console.log(data)
+                navigate('/home',{state:data.data})
+            })
+            .catch((error) => {
+
+            });
+    }, [navigate]);
     function onLogin(e){
         setLoginError(false)
         setLoad(true)
@@ -39,7 +60,7 @@ export default function LoginPage(){
             .then((data) => {
                 setLoginError(false)
                 setLoad(false)
-                navigate('/home',{state:data})
+                navigate('/home',{state:data.data})
             })
             .catch((error) => {
                 setLoginError(true)

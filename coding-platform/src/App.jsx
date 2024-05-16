@@ -9,6 +9,7 @@ import Reset from "./page/LoginPage/Reset.jsx";
 import NewPasswordReset from "./page/LoginPage/NewPasswordReset.jsx";
 import LoadingBar from "./LoadingBar.jsx";
 import SignUp from "./page/LoginPage/SignUp.jsx";
+import Home from "./page/HomePage/Home.jsx";
 
 function App() {
   const [count, setCount] = useState(0)
@@ -24,6 +25,7 @@ function App() {
           <Route path={'/register'} Component={SignUp}/>
           <Route path={'/register/:resetToken'} element={
               <NewPasswordReset isReset={false}/>}/>
+          <Route path={'/home/*'} Component={Home}/>
       </Routes>
     </>
   )
