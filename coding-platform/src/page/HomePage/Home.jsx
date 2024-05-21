@@ -6,12 +6,15 @@ import dashboardSVG from './dashboard.svg'
 import testSVG from './quiz.svg'
 import aiSVG from './ai.svg'
 import logoutSVG from './logout.svg'
+import codeSVG from './code.svg'
 import {data} from "express-session/session/cookie.js";
 import {useEffect, useState} from "react";
 import CircularImage from "./component/CircularImage.jsx";
 import profile from './profile.png'
 import SearchBox from "./component/SearchBox.jsx";
 import Notification from "./component/Notification.jsx";
+import CodeSpace from "./CodeSpace.jsx";
+import Dropdown from "./component/Dropdown.jsx";
 export default function Home(){
     const location = useLocation()
     const navigate = useNavigate()
@@ -82,13 +85,18 @@ export default function Home(){
                                 <img src={aiSVG} alt={'ai'}/>
                                 Assistive AI</NavLink>
                         </li>
+                        <li>
+                            <NavLink to={'/home/code-space'} className={navLink}>
+                                <img src={codeSVG} alt={'code space'}/>
+                                Code Space</NavLink>
+                        </li>
                     </ul>
                 </div>
                 <div className={style.topMenu}>
                     <ul>
                         <li>
                             <NavLink to={'/login'} className={navLink} onClick={onLogout}>
-                                <img src={logoutSVG} alt={'ai'}/>
+                            <img src={logoutSVG} alt={'ai'}/>
                                 Log Out</NavLink>
                         </li>
                     </ul>
@@ -109,7 +117,9 @@ export default function Home(){
                     </div>
                 </div>
                 <div className={style.i}>
-                    
+                    <Routes>
+                        <Route path={'code-space'} Component={CodeSpace}/>
+                    </Routes>
                 </div>
             </div>
         </section>

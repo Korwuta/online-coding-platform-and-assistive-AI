@@ -40,6 +40,11 @@
     padding-left: 35px;
     height: 8.5vh;
 }
+.logoContainer label{
+    color: #646cff;
+    font-weight: bold;
+
+}
 .i{
     height: 88.5vh;
     overflow-y: scroll;

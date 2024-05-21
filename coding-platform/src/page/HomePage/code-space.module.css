@@ -1,0 +1,31 @@
+.hingeBar{
+    display: flex;
+    place-content: space-around;
+    place-items: center;
+    border-bottom: 1px solid #3a3939;
+    height: 7vh;
+}
+.hingeBar label{
+    background: linear-gradient(25deg,#646cff,red);
+    background-clip: text;
+    font-size: 1.5rem;
+    color: transparent;
+    font-weight: bold;
+}
+.language{
+    display: flex;
+    place-items: center;
+    gap: 10px;
+    color: white;
+    font-family: monospace;
+    font-size: 0.8rem;
+}
+.selector ul{
+    margin: 0;
+    list-style: none;
+    border: 1px solid gray;
+    padding: 5px;
+}
+.selector li{
+    height: 30px;
+}
