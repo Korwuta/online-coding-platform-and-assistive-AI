@@ -35,7 +35,7 @@
     display: flex;
     place-items: center;
     gap: 20px;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     border-bottom: 1px solid #313030;
     padding-left: 35px;
     height: 8.5vh;
@@ -43,7 +43,6 @@
 .logoContainer label{
     color: #646cff;
     font-weight: bold;
-
 }
 .i{
     height: 88.5vh;
@@ -67,7 +66,7 @@
     padding-left: 7px;
     place-items: center;
     gap:10px;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     padding-top: 1.5vh;
     padding-bottom: 1.5vh;
     color: gainsboro;
@@ -98,7 +97,7 @@
     border-radius: 10px;
 }
 .name label{
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     cursor: pointer;
 }
 .name div{
@@ -109,7 +108,7 @@
 
 }
 .name div>:last-child{
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: gray;
 }
 @keyframes appear {

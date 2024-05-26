@@ -9,13 +9,13 @@
     background-color: #1f1f1f;
 }
 .searchBox img{
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
 }
 .searchBox input{
     border: none;
     outline: none;
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     color: gainsboro;
     font-family: "Work Sans", sans-serif;
     background-color: transparent;

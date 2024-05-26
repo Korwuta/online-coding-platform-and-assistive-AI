@@ -15,6 +15,11 @@ import SearchBox from "./component/SearchBox.jsx";
 import Notification from "./component/Notification.jsx";
 import CodeSpace from "./CodeSpace.jsx";
 import Dropdown from "./component/Dropdown.jsx";
+import {create} from 'zustand'
+export const useCode = create((set)=>({
+    code:'',
+    setCode: (value)=> set(()=>({code:value}))
+}))
 export default function Home(){
     const location = useLocation()
     const navigate = useNavigate()
@@ -104,11 +109,11 @@ export default function Home(){
             </div>
             <div className={style.content}>
                 <div className={style.topBar}>
-                    <SearchBox  height={40} width={400}/>
+                    <SearchBox  height={35} width={400}/>
                     <div className={style.leftOption}>
                         <Notification/>
                         <div className={style.name}>
-                            <CircularImage src={`http://localhost:3000/profile/${displayName}`} alt={'profile'} size={40}/>
+                            <CircularImage src={`http://localhost:3000/profile/${displayName}`} alt={'profile'} size={35}/>
                             <div>
                                 <label>{displayName}</label>
                                 <label>Admin</label>

@@ -16,6 +16,7 @@ export default function Dropdown({items,value}){
         }))
     }, [selectedItem]);
     useEffect(() => {
+        value(selectedItem)
         setHeight(ulRef.current.scrollHeight)
     }, []);
     function onHover(){
@@ -25,16 +26,16 @@ export default function Dropdown({items,value}){
         setShowOption(false)
     }
     return(
-        <div className={style.dropDownContainer} onMouseLeave={onLeave}>
+        <div className={style.dropDownContainer} onMouseEnter={onHover} onMouseLeave={onLeave}>
             <div style={{
-                width:'200px',
+                width:'140px',
                 outline:`${showOption?'1px solid #535bf2':''}`,
-            }} onMouseEnter={onHover}>
+            }} >
                 <span>{selectedItem}</span>
                 <img src={downDrop} alt={'down drop'}/>
             </div>
             <ul style={{
-                width:'200px',
+                width:'140px',
 
                 height:`${showOption?height:0}px`,
                 border:`${showOption?'1px solid white':'none'}`}} ref={ulRef} >
