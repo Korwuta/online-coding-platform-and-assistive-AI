@@ -10,6 +10,7 @@ const register = require('./authentication/register')
 const resetPassword = require('./authentication/reset')
 const flash = require('express-flash')
 const fs = require('fs')
+const runCode = require('./services/code-services')
 const avatar = require("./uploads/initials-generator");
 //variable declaration
 let dailyLogins = {}
@@ -43,7 +44,7 @@ app.use(flash())
 app.use('/auth',login)
 app.use('/register',register)
 app.use('/resetpassword',resetPassword)
-
+app.use('/services',runCode)
 app.get('/home',(req,res)=>{
     if(req.isAuthenticated()){
         // if(!dailyLogins[`Day${getDate()}`]){

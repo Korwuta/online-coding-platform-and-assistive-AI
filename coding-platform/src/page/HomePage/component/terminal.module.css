@@ -1,5 +1,8 @@
 .terminal{
-
-    overflow-y: scroll;
     border-top: 1px solid #3a3939;
+    overflow-y:scroll;
+    padding-left: 15px;
+    padding-top: 1.5vh;
+    background-color: black;
+    
 }

@@ -45,6 +45,9 @@ app.post('/token/:resetToken',(req
 })
 app.post('/sendresetlink',(req,res)=>{
     const {username} = req.body;
+    if(!username){
+        return res.status(401).json({message:'username required'})
+    }
     db.getUserWithUsername(username).then((row)=>{
         if(!row){
             return res.status(401).json({message:'username doesn\'t exist'})

@@ -1,19 +1,28 @@
 import {XTerm} from "xterm-for-react";
 import style from './terminal.module.css'
+import {Terminal} from 'xterm'
 import {useEffect, useRef} from "react";
-const terminalOutput = 'CODE Terminal:'
-export default function Terminal({size,output}){
+
+export default function TerminalComponent({size,output}){
     const terminalRef = useRef();
     useEffect(() => {
-        terminalRef.current.terminal.focus()
-        terminalRef.current.terminal.writeln(`${terminalOutput}${output||''}`)
-    }, []);
+        const term = new Terminal()
+        term.open(terminalRef.current)
+        term.options.fontFamily = 'monospace'
+        term.writeln('Output:')
+        output&&output.forEach((value)=>{
+            console.log('hi')
+            term.writeln(`${value}`)
+        })
+        return()=>{
+            if(term){
+                term.dispose()
+            }
+        }
+    }, [output]);
     return(
-        <section className={style.terminal} style={{height:`${size}vh`}}>
-            <XTerm options={{
-                cursorBlink:true,
-                fontFamily:'monospace',
-            }} ref={terminalRef}/>
+        <section className={style.terminal} style={{height:`${size}vh`}} ref={terminalRef}>
+
         </section>
 
     )

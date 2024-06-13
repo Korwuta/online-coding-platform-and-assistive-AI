@@ -17,7 +17,7 @@ app.post('/registeruser/:token',(req, res)=>{
     }
     jwt.verify(req.params.token,process.env['CONFIRMATION_SECRET'],{},(err,decode)=>{
         if(err){
-            return res.status(403).json({message:'link expired'})
+            return res.status(403).json(    {message:'link expired'})
         }else{
             let salt = crypt.randomBytes(30)
             crypt.pbkdf2(newPassword,salt,252000,50,'sha256',(err, hashcode)=>{
@@ -45,7 +45,7 @@ app.post('/registeruser/:token',(req, res)=>{
 app.post('/registeruser',(req, res)=>{
     let {firstName,lastName,username,email} = req.body
 
-    if(!(firstName||"").match(/\w{2,}/)){
+    if(!/\w{2,}/.test(firstName)){
         return res.status(400).json({message:'Invalid first name'})
     }
     if(!(lastName||"").match(/\w{2,}/)){

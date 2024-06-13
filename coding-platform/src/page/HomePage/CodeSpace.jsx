@@ -6,15 +6,45 @@ import Terminal from "./component/Terminal.jsx";
 import debugSVG from './debug.svg'
 import terminalSVG from './terminal.svg'
 import {useCode} from "./Home.jsx";
-
+import TerminalComponent from "./component/Terminal.jsx";
+import LoadingBar from "../../LoadingBar.jsx";
 
 export default function CodeSpace(){
     const [language, setLanguage] = useState('')
     const [openT, setOpenT] = useState(false)
+    const [output, setOutput] = useState([])
+    const [loading, setLoading] = useState(false)
     const [code,setCode] = useCode((state)=>[state.code,state.setCode])
     useEffect(() => {
 
     }, [code]);
+    function onRun(){
+        setLoading(true)
+        fetch('http://localhost:3000/services/compile-code',{
+            method:'POST',
+            credentials:'include',
+            headers:{
+                'Cookies':'cookies.txt',
+                'Content-Type':'application/json',
+            },
+            body:JSON.stringify({code:code,language:'java'})
+        }).then((response) => {
+            setLoading(false)
+            if(!response.ok){
+                return response.json().then((data)=>{
+                    throw new Error(data.error)
+                })
+            }
+            return response.json();
+        })
+            .then((data) => {
+                setOutput(data.output)
+                setOpenT(true)
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+    }
     return(
         <>
             <div className={style.hingeBar}>
@@ -28,7 +58,7 @@ export default function CodeSpace(){
                         language:
                         <Dropdown items={['Python', 'Java', 'JavaScript', 'Python']} value={setLanguage}/>
                     </div>
-                    <div className={style.run}>
+                    <div className={style.run} onClick={onRun}>
                         Run
                         <img src={debugSVG} alt={'debug'}/>
                     </div>
@@ -42,7 +72,8 @@ export default function CodeSpace(){
                 </div>
             </div>
             <CodeEditor language={language} value={setCode} code={code} size={openT?60:81.2}/>
-            {openT&&<Terminal size={21.3}/>}
+            {openT&&<TerminalComponent size={19.8} output={output}/>}
+            {loading&&<LoadingBar/>}
         </>
     )
 }

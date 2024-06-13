@@ -18,6 +18,7 @@ import Dropdown from "./component/Dropdown.jsx";
 import {create} from 'zustand'
 export const useCode = create((set)=>({
     code:'',
+    language:'',
     setCode: (value)=> set(()=>({code:value}))
 }))
 export default function Home(){
