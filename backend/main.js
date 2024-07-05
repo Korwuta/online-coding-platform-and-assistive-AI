@@ -10,7 +10,7 @@ const register = require('./authentication/register')
 const resetPassword = require('./authentication/reset')
 const flash = require('express-flash')
 const fs = require('fs')
-const runCode = require('./services/code-services')
+const runCode = require('./services/code/code-services')
 const avatar = require("./uploads/initials-generator");
 //variable declaration
 let dailyLogins = {}

@@ -16,10 +16,13 @@ import Notification from "./component/Notification.jsx";
 import CodeSpace from "./CodeSpace.jsx";
 import Dropdown from "./component/Dropdown.jsx";
 import {create} from 'zustand'
+import {value} from "lodash/seq.js";
+import Test from "./Test.jsx";
 export const useCode = create((set)=>({
     code:'',
     language:'',
-    setCode: (value)=> set(()=>({code:value}))
+    setCode: (value)=> set(()=>({code:value})),
+    setLanguage: (value)=>set(()=>({language:value}))
 }))
 export default function Home(){
     const location = useLocation()
@@ -82,7 +85,7 @@ export default function Home(){
                                 Dashboard</NavLink>
                         </li>
                         <li>
-                            <NavLink to={'/home/you'} className={navLink}>
+                            <NavLink to={'/home/test'} className={navLink}>
                                 <img src={testSVG} alt={'test'}/>
                                 Tests</NavLink>
                         </li>
@@ -125,6 +128,7 @@ export default function Home(){
                 <div className={style.i}>
                     <Routes>
                         <Route path={'code-space'} Component={CodeSpace}/>
+                        <Route path={'test'} Component={Test}/>
                     </Routes>
                 </div>
             </div>

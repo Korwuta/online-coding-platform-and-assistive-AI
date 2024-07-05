@@ -77,37 +77,42 @@ export default function LandingPage(props){
                         </div>
                     </div>
                 </div>
+
             </header>
-            <div className={style.navBarContainer}>
-                <div className={style.scrollUpIndicator}>
-                    <span>scroll up to explore to view our work</span>
-                    <div className={style.indicator}><img src={downArrow}/></div>
-                </div>
-                <nav className={`${style.navBar} ${stickNavBar?style.stick:''}`}>
-                    <div>
-                        <img src={brandLogo} alt={"logo"}/>
-                        <p>CODE</p>
+            <main className={style.main}>
+                <div className={style.navBarContainer}>
+                    <div className={style.scrollUpIndicator}>
+                        <span>scroll up to explore to view our work</span>
+                        <div className={style.indicator}><img src={downArrow}/></div>
                     </div>
-                    <ul>
-                        {
-                            [{link:'',name:'Practice'},{link:'',name:'Explore'}].map((value,index) =>
-                                <li key={index} onMouseEnter={()=>{onMouseEnterLink(index)}} onMouseLeave={
-                                    ()=>{onMouseLeaveLink()}}>
-                                    <NavLink to={value.link} className={navLinkStyling}>
-                                        {value.name}<ArrowUp
-                                        color={navLinkHover===index ? '#646cff' : 'gainsboro' }/>
-                                    </NavLink>
-                                </li>
-                            )
-                        }
-                        <li>
-                            <NavLink to={'/login'} className={style.tryNow}>Try NOW
-                                <ArrowUp color={'#646cff'}/></NavLink>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            <main>
+                    <nav className={`${style.navBar} ${stickNavBar ? style.stick : ''}`}>
+                        <div>
+                            <img src={brandLogo} alt={"logo"}/>
+                            <p>CODE</p>
+                        </div>
+                        <ul>
+                            {
+                                [{link: '', name: 'Practice'}, {link: '', name: 'Explore'}].map((value, index) =>
+                                    <li key={index} onMouseEnter={() => {
+                                        onMouseEnterLink(index)
+                                    }} onMouseLeave={
+                                        () => {
+                                            onMouseLeaveLink()
+                                        }}>
+                                        <NavLink to={value.link} className={navLinkStyling}>
+                                            {value.name}<ArrowUp
+                                            color={navLinkHover === index ? '#646cff' : 'gainsboro'}/>
+                                        </NavLink>
+                                    </li>
+                                )
+                            }
+                            <li>
+                                <NavLink to={'/login'} className={style.tryNow}>Try NOW
+                                    <ArrowUp color={'#646cff'}/></NavLink>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
                 <section className={style.onlineIDLE}>
                     <div className={style.onlineIDLEMessage}>
                         <div className={style.onlineIDLEContainer}>
@@ -172,9 +177,10 @@ export default function LandingPage(props){
                     </div>
                     <div className={style.aiOptions}>
                         <div className={style.aiOption}>
-                            <VerticalCard caption={'Error Detection'} text={'Our cutting-edge machine learning system provides seamless detection' +
-                                'and resolution of logical errors and predictive inaccuracies in your' +
-                                ' Code Say goodbye to tedious error hunting and welcome effortless debugging with our AI tool'}/>
+                            <VerticalCard caption={'Error Detection'}
+                                          text={'Our cutting-edge machine learning system provides seamless detection' +
+                                              'and resolution of logical errors and predictive inaccuracies in your' +
+                                              ' Code Say goodbye to tedious error hunting and welcome effortless debugging with our AI tool'}/>
                             <VerticalCard caption={'Code Generation'} text={'Discover a game-changing solution for' +
                                 ' your development endeavors with our pioneering code generation AI. Designed to' +
                                 ' streamline your coding process, our AI effortlessly crafts precise and optimized code,' +

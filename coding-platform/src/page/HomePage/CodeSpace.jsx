@@ -10,15 +10,18 @@ import TerminalComponent from "./component/Terminal.jsx";
 import LoadingBar from "../../LoadingBar.jsx";
 
 export default function CodeSpace(){
-    const [language, setLanguage] = useState('')
+    const [language, setLanguage] =
+        useCode((state)=>[state.language,state.setLanguage])
     const [openT, setOpenT] = useState(false)
     const [output, setOutput] = useState([])
     const [loading, setLoading] = useState(false)
-    const [code,setCode] = useCode((state)=>[state.code,state.setCode])
+    const [code,setCode] =
+        useCode((state)=>[state.code,state.setCode])
     useEffect(() => {
 
     }, [code]);
     function onRun(){
+        console.log(language)
         setLoading(true)
         fetch('http://localhost:3000/services/compile-code',{
             method:'POST',
@@ -27,7 +30,7 @@ export default function CodeSpace(){
                 'Cookies':'cookies.txt',
                 'Content-Type':'application/json',
             },
-            body:JSON.stringify({code:code,language:'java'})
+            body:JSON.stringify({code:code,language:language})
         }).then((response) => {
             setLoading(false)
             if(!response.ok){

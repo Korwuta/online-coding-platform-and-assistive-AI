@@ -19,6 +19,8 @@
     box-shadow: 0 0 2px 0 black;
     contain: paint;
     height: 97vh;
+    display: flex;
+    flex-direction: column;
     animation: appear 0.5s ease;
 
 }

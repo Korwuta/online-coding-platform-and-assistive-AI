@@ -1,0 +1,102 @@
+.testContainer{
+    display: grid;
+    flex: 1;
+    height: 100%;
+    margin: 0;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+.testContainer>div{
+    border: 2px solid #202020;
+
+}
+.testContainer>div:hover{
+    opacity: 0.9;
+}
+.codeJourney{
+    width: 400px;
+    height: 550px;
+    place-self: center;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    border-radius: 20px;
+    /*background: linear-gradient(180deg,#3B3B3B 60%,#1F1F1F 100%);*/
+    background-image: url("./component/coding-not-css.svg");
+    background-size: 90% 90%;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-color: rgba(0,0,0,0.4);
+    color: gainsboro;
+    background-blend-mode: color;
+    display: flex;
+    place-items: end;
+    contain: paint;
+    border: 2px solid #2d2d2d;
+}
+.codeJourney:hover{
+    color: white;
+}
+.codeJourney div{
+    height: 30%;
+    padding: 0 32px;
+}
+.QAContainer{
+    grid-column-start: 2;
+    grid-column-end: 4;
+    height: 200px;
+    width: 500px;
+    border-radius: 20px;
+    background-color: rgba(0,0,0,0.4);
+    border: 2px solid #2d2d2d;
+    background-image: url("./drawer-qa.svg");
+    background-size: 45% 65%;
+    background-position: left center;
+    background-repeat: no-repeat;
+    place-self: center;
+    display: flex;
+    justify-content: end;
+    place-items: center;
+    color: gainsboro;
+}
+.QAContainer div{
+    width: 60%;
+    font-size: 1rem;
+
+}
+.contestContainer,.problemContainer{
+    justify-self: center;
+    align-self: start;
+    height: 200px;
+    width: 200px;
+    border-radius: 35px;
+    background-color: rgba(0,0,0,0.4);
+    background-position: center center;
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+    display: flex;
+    place-items: end;
+    place-content: center;
+    border: 2px solid #2d2d2d;
+    contain: paint;
+    font-size: 0.9rem;
+    color: gainsboro;
+
+}
+.contestContainer:hover,.problemContainer:hover,.QAContainer:hover{
+    color: white;
+}
+
+.contestContainer{
+    background-image: url("../LandingPage/trophy-colored.svg");
+
+}
+.problemContainer div,.contestContainer div{
+    padding-bottom: 20px;
+
+    width: 100%;
+    text-align: center;
+}
+.problemContainer{
+    background-image: url("question.svg");
+
+}
