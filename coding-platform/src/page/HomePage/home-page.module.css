@@ -47,6 +47,8 @@
     font-weight: bold;
 }
 .i{
+    display: flex;
+    flex-direction: column;
     height: 88.5vh;
     overflow-y: scroll;
 }

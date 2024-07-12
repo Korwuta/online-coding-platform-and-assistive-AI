@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import Terminal from "./component/Terminal.jsx";
 import debugSVG from './debug.svg'
 import terminalSVG from './terminal.svg'
-import {useCode} from "./Home.jsx";
+import {useCode} from "../../statemanagement.jsx";
 import TerminalComponent from "./component/Terminal.jsx";
 import LoadingBar from "../../LoadingBar.jsx";
 

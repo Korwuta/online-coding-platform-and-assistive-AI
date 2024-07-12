@@ -18,12 +18,7 @@ import Dropdown from "./component/Dropdown.jsx";
 import {create} from 'zustand'
 import {value} from "lodash/seq.js";
 import Test from "./Test.jsx";
-export const useCode = create((set)=>({
-    code:'',
-    language:'',
-    setCode: (value)=> set(()=>({code:value})),
-    setLanguage: (value)=>set(()=>({language:value}))
-}))
+import AssistiveAI from "./AssistiveAI.jsx";
 export default function Home(){
     const location = useLocation()
     const navigate = useNavigate()
@@ -45,10 +40,12 @@ export default function Home(){
                 setDisplayName(data.data.displayName)
             })
             .catch((error) => {
+                
                 navigate('/login')
             });
     }, []);
     function navLink({isActive,isPending}){
+
         return `${style.navLink} ${isActive&&style.active}`
     }
     function onLogout(){
@@ -129,6 +126,7 @@ export default function Home(){
                     <Routes>
                         <Route path={'code-space'} Component={CodeSpace}/>
                         <Route path={'test'} Component={Test}/>
+                        <Route path={'assistive-ai'} Component={AssistiveAI}/>
                     </Routes>
                 </div>
             </div>

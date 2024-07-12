@@ -6,6 +6,7 @@ export default function InputBox(props){
     const [isFocus,setStateFocus] = useState(false);
     const [inputValue,setInputValue] = useState("");
     const thisInput = useRef();
+    const [email,setEmail] = useState("")
     let setFocus = ()=>{
         thisInput.current.focus()
         setStateFocus(true)

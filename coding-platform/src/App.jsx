@@ -14,7 +14,14 @@ import Home from "./page/HomePage/Home.jsx";
 function App() {
   const [count, setCount] = useState(0);
 
-
+    useEffect(() => {
+        window.addEventListener('keydown',(e)=>{
+            if (e.ctrlKey && (e.key === 83)) {
+                e.preventDefault();
+                return false;
+            }
+        })
+    }, []);
   return (
     <>
       <Routes>

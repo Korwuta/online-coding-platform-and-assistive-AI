@@ -1,0 +1,25 @@
+.requestCard{
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    background-color: #080808;
+    height: fit-content;
+    contain: paint;
+    border-radius: 10px;
+    box-shadow: 0 0 2px 0 black;
+}
+.prompt label{
+    font-size: 1rem;
+}
+.prompt{
+    padding: 20px 25px;
+}
+
+
+.result pre{
+    margin: 0;
+    background-color: black;
+}
+.result code{
+    padding: 10px 25px;
+}
