@@ -12,6 +12,7 @@ const flash = require('express-flash')
 const fs = require('fs')
 const runCode = require('./services/code/code-services')
 const avatar = require("./uploads/initials-generator");
+const tutorial = require('./services/journey/tutorials')
 //variable declaration
 let dailyLogins = {}
 if(fs.existsSync(Path.join(__dirname,'logins'))){
@@ -45,6 +46,7 @@ app.use('/auth',login)
 app.use('/register',register)
 app.use('/resetpassword',resetPassword)
 app.use('/services',runCode)
+app.use('/services',tutorial)
 app.get('/home',(req,res)=>{
     if(req.isAuthenticated()){
         // if(!dailyLogins[`Day${getDate()}`]){

@@ -1,0 +1,44 @@
+.programmingJourney{
+    display: flex;
+    width: 100%;
+    flex: 1;
+    overflow-y: hidden;
+}
+.sideOptions{
+    width: 20%;
+    background-color: #1F1F1F;
+    border-left: 1px solid #313030;
+    display: flex;
+    flex-direction: column;
+}
+.sideOptions p{
+    font-size: 1.3rem;
+}
+.sideOptions ul{
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+.sideOptions li{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #282828;
+    cursor: pointer;
+}
+.sideOptions li:hover{
+    background-color: #3b3a3a;
+}
+.sideOptions>:first-child{
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #1A1A1A;
+    border-bottom: 1px solid #313030;
+}
+.sideOptions>:last-child{
+    flex: 1;
+    overflow-y: scroll;
+}
+.content{
+    flex: 1;
+    overflow-y: scroll;
+}

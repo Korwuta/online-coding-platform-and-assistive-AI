@@ -19,6 +19,7 @@ import {create} from 'zustand'
 import {value} from "lodash/seq.js";
 import Test from "./Test.jsx";
 import AssistiveAI from "./AssistiveAI.jsx";
+import ProgrammingJourney from "./component/Journey/ProgrammingJourney.jsx";
 export default function Home(){
     const location = useLocation()
     const navigate = useNavigate()
@@ -127,6 +128,7 @@ export default function Home(){
                         <Route path={'code-space'} Component={CodeSpace}/>
                         <Route path={'test'} Component={Test}/>
                         <Route path={'assistive-ai'} Component={AssistiveAI}/>
+                        <Route path={'test/journey/:language'} Component={ProgrammingJourney}/>
                     </Routes>
                 </div>
             </div>

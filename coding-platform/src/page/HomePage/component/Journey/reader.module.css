@@ -1,0 +1,16 @@
+.reader{
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-bottom: 30px;
+}
+.reader h2{
+    margin-top: 40px;
+    margin-bottom: 30px;
+    margin-left: 10px;
+}
+.passage{
+    border-radius: 20px;
+    border: 1px solid #313030;
+    font-size: 1.05rem;
+    padding: 20px;
+}

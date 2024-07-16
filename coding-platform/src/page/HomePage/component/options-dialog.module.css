@@ -1,0 +1,56 @@
+.optionsDialogSection{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.9);
+    display: flex;
+    place-content: center;
+
+}
+.dialog{
+    width: 500px;
+    place-self: center;
+    gap: 20px;
+    border-radius: 15px;
+    contain: paint;
+    background-color: #1F1F1F;
+}
+.content{
+    margin-top: 10px;
+    padding: 0 25px 20px 25px;
+}
+.caption{
+    background-color: #3B3B3B;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 25px;
+}
+.options{
+    list-style: none;
+    margin: 0;
+    padding-left: 10px;
+    font-size: 1.2rem;
+}
+.options li{
+   padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #3B3B3B;
+}
+.options li:hover{
+    background-color: #323232;
+}
+.options a{
+    display: block;
+    width: 100%;
+}
+.action{
+    margin-top: 20px;
+    display: flex;
+    place-content: end;
+}
+.action button{
+    font-size: 1rem;
+    background-color: #EF4444;
+}

@@ -49,19 +49,19 @@
     background-color: rgba(0,0,0,0.4);
     border: 2px solid #2d2d2d;
     background-image: url("./drawer-qa.svg");
-    background-size: 45% 65%;
+    background-size: 35% 55%;
     background-position: left center;
     background-repeat: no-repeat;
     place-self: center;
     display: flex;
     justify-content: end;
+    padding-right: 20px;
     place-items: center;
     color: gainsboro;
 }
 .QAContainer div{
-    width: 60%;
+    width:65%;
     font-size: 1rem;
-
 }
 .contestContainer,.problemContainer{
     justify-self: center;
@@ -71,7 +71,7 @@
     border-radius: 35px;
     background-color: rgba(0,0,0,0.4);
     background-position: center center;
-    background-size: 50% 50%;
+    background-size: 40% 40%;
     background-repeat: no-repeat;
     display: flex;
     place-items: end;

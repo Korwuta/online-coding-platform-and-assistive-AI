@@ -63,11 +63,27 @@ async function updatePassword(username,password_hash,salt){
         [password_hash,salt,username])
     return res.rows[0]
 }
+async function getTopic(language){
+    const res = await pool.
+    query(
+        `SELECT name,index FROM "Topic" WHERE language = $1 ORDER BY index`,
+        [language])
+    return res.rows
+}
+async function getTutorial(language,index){
+    const res = await pool.
+    query(
+        `SELECT topic,passage,question FROM "Tutorial" WHERE language = $1 AND index = $2`,
+        [language,index])
+    return res.rows[0]
+}
 module.exports = {
     createUserLocal,
     createUserNonLocal,
     findAuthentication,
     getUserById,
     getUserWithUsername,
-    updatePassword
+    updatePassword,
+    getTopic,
+    getTutorial
 }
