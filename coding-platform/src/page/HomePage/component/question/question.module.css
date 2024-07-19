@@ -1,0 +1,29 @@
+
+.question{
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-bottom: 30px;
+    position: relative;
+    flex: 1;
+}
+.question h2{
+    margin-top: 40px;
+    margin-bottom: 30px;
+    margin-left: 10px;
+}
+.mcq{
+    display: grid;
+    gap: 20px;
+    margin-bottom: 70px;
+}
+.question button{
+    position: absolute;
+    bottom: 0;
+    right: 50px;
+    display: flex;
+    place-items: center;
+    gap: 10px;
+    background-color: #0078D4;
+    font-size: 1rem;
+    padding: 5px 20px;
+}

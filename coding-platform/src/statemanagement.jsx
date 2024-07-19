@@ -9,7 +9,12 @@ const useRequest = create(set=>({
     requests:[],
     setRequests: (request)=>set(state=>({requests:[...state.requests,request]}))
 }))
+const useUser = create(set=>({
+    user:{},
+    setUser:(user)=>set({user:user})
+}))
 export {
     useCode,
-    useRequest
+    useRequest,
+    useUser
 }

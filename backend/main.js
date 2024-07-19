@@ -13,6 +13,7 @@ const fs = require('fs')
 const runCode = require('./services/code/code-services')
 const avatar = require("./uploads/initials-generator");
 const tutorial = require('./services/journey/tutorials')
+const question = require('./services/question/question')
 //variable declaration
 let dailyLogins = {}
 if(fs.existsSync(Path.join(__dirname,'logins'))){
@@ -22,7 +23,7 @@ if(fs.existsSync(Path.join(__dirname,'logins'))){
 app = express()
 app.use(morgan('short'))
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:/http:\/\/localhost:\d+/,
     credentials: true
 }))
 app.use(express.static(Path.join(__dirname,'public')))
@@ -47,6 +48,7 @@ app.use('/register',register)
 app.use('/resetpassword',resetPassword)
 app.use('/services',runCode)
 app.use('/services',tutorial)
+app.use('/services',question)
 app.get('/home',(req,res)=>{
     if(req.isAuthenticated()){
         // if(!dailyLogins[`Day${getDate()}`]){

@@ -77,6 +77,13 @@ async function getTutorial(language,index){
         [language,index])
     return res.rows[0]
 }
+async function getQuestion(language){
+    const res = await pool.
+    query(
+        `SELECT * FROM "Question" WHERE language = $1 ORDER BY RANDOM() LIMIT 5`,
+        [language])
+    return res.rows
+}
 module.exports = {
     createUserLocal,
     createUserNonLocal,
@@ -85,5 +92,6 @@ module.exports = {
     getUserWithUsername,
     updatePassword,
     getTopic,
-    getTutorial
+    getTutorial,
+    getQuestion
 }

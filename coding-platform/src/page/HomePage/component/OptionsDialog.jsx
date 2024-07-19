@@ -7,9 +7,10 @@ export default function OptionsDialog({options,close}){
                 <div className={styles.caption}><p>Select Programming Language</p></div>
                 <div className={styles.content}>
                     <ul className={styles.options}>
-                        <li><Link to={'/home/test/journey/java'} style={{color:"gainsboro"}}>Java</Link></li>
-                        <li><Link to={'/home/test/journey/python'} style={{color:"gainsboro"}}>Python</Link></li>
-                        <li><Link to={'/home/test/journey/javascript'} style={{color:"gainsboro"}}>Javascript</Link></li>
+                        {
+                            options.map((value,key)=> (
+                                <li key={key}><Link to={value.link} style={{color: "gainsboro"}}>{value.name}</Link></li>))
+                        }
                     </ul>
                     <div className={styles.action}>
                         <button onClick={()=>{close(null)}}>Cancel</button>

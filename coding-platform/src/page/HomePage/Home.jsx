@@ -1,5 +1,5 @@
 import {NavLink, Route, Routes, useLocation, useNavigate} from "react-router-dom";
-import LoginPage from "../LoginPage/LoginPage.jsx";
+
 import style from './home-page.module.css'
 import logo from '../LandingPage/logo.svg'
 import dashboardSVG from './dashboard.svg'
@@ -7,23 +7,22 @@ import testSVG from './quiz.svg'
 import aiSVG from './ai.svg'
 import logoutSVG from './logout.svg'
 import codeSVG from './code.svg'
-import {data} from "express-session/session/cookie.js";
+
 import {useEffect, useState} from "react";
 import CircularImage from "./component/CircularImage.jsx";
-import profile from './profile.png'
+
 import SearchBox from "./component/SearchBox.jsx";
 import Notification from "./component/Notification.jsx";
 import CodeSpace from "./CodeSpace.jsx";
-import Dropdown from "./component/Dropdown.jsx";
-import {create} from 'zustand'
-import {value} from "lodash/seq.js";
+import {useUser} from "../../statemanagement.jsx";
 import Test from "./Test.jsx";
 import AssistiveAI from "./AssistiveAI.jsx";
-import ProgrammingJourney from "./component/Journey/ProgrammingJourney.jsx";
+import ProgrammingJourney from "./component/journey/ProgrammingJourney.jsx";
+import question from "./component/question/Question.jsx";
 export default function Home(){
     const location = useLocation()
     const navigate = useNavigate()
-    const [displayName,setDisplayName] = useState('')
+    const [user,setUser] = useUser(state=>([state.user,state.setUser]))
     useEffect(() => {
         console.log(location.state)
         fetch('http://localhost:3000/home',{
@@ -38,15 +37,15 @@ export default function Home(){
             return response.json();
         })
             .then((data) => {
-                setDisplayName(data.data.displayName)
+                setUser(data.data)
+                console.log(user)
             })
             .catch((error) => {
-                
+
                 navigate('/login')
             });
     }, []);
     function navLink({isActive,isPending}){
-
         return `${style.navLink} ${isActive&&style.active}`
     }
     function onLogout(){
@@ -115,9 +114,9 @@ export default function Home(){
                     <div className={style.leftOption}>
                         <Notification/>
                         <div className={style.name}>
-                            <CircularImage src={`http://localhost:3000/profile/${displayName}`} alt={'profile'} size={35}/>
+                            <CircularImage src={`http://localhost:3000/profile/${user.displayName}`} alt={'profile'} size={35}/>
                             <div>
-                                <label>{displayName}</label>
+                                <label>{user.displayName}</label>
                                 <label>Admin</label>
                             </div>
                         </div>
@@ -129,6 +128,7 @@ export default function Home(){
                         <Route path={'test'} Component={Test}/>
                         <Route path={'assistive-ai'} Component={AssistiveAI}/>
                         <Route path={'test/journey/:language'} Component={ProgrammingJourney}/>
+                        <Route path={'test/question/:language'} Component={question}/>
                     </Routes>
                 </div>
             </div>

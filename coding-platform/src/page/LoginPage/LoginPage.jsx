@@ -29,7 +29,6 @@ export default function LoginPage(){
             return response.json();
         })
             .then((data) => {
-                console.log(data)
                 navigate('/home',{state:data.data})
             })
             .catch((error) => {
