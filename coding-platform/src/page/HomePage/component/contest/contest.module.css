@@ -1,0 +1,63 @@
+.inviteContainer{
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+.inviteContainer>*{
+    width: 50%;
+}
+.greetings{
+    display: flex;
+    place-items: center;
+    place-content: center;
+    padding: 0 50px;
+}
+.greetings>div{
+    display: grid;
+    gap: 40px;
+}
+.greetings h2{
+    margin: 0;
+}
+.greetings button{
+    background-color: #228B22;
+    width: fit-content;
+}
+.illustration{
+    display: flex;
+    place-content: center;
+    place-self: center;
+}
+.illustration img{
+    width: 90%;
+    height: auto;
+}
+.inviteLink{
+    margin-top: 10px;
+    width: 70%;
+    display: flex;
+    place-items: center;
+    background-color: #2B2B2B;
+    border-radius: 10px;
+    padding: 0 15px;
+    border: 2px solid #313030;
+}
+.greetings span{
+    font-size: 0.8rem;
+    color: burlywood;
+}
+
+.inviteLink input{
+    border: none;
+    flex: 1;
+    padding-top: 15px;
+    font-family: monospace;
+    padding-bottom: 15px;
+    font-size: 1rem;
+    background-color: transparent;
+}
+.inviteLink svg:hover{
+    background-color: gray;
+    padding: 6px;
+    border-radius: 50%;
+}

@@ -19,6 +19,8 @@ import Test from "./Test.jsx";
 import AssistiveAI from "./AssistiveAI.jsx";
 import ProgrammingJourney from "./component/journey/ProgrammingJourney.jsx";
 import question from "./component/question/Question.jsx";
+import contest from "./component/contest/Contest.jsx";
+import gamePreview from "./component/contest/GamePreview.jsx";
 export default function Home(){
     const location = useLocation()
     const navigate = useNavigate()
@@ -41,10 +43,9 @@ export default function Home(){
                 console.log(user)
             })
             .catch((error) => {
-
                 navigate('/login')
             });
-    }, []);
+    }, [user.id]);
     function navLink({isActive,isPending}){
         return `${style.navLink} ${isActive&&style.active}`
     }
@@ -129,6 +130,8 @@ export default function Home(){
                         <Route path={'assistive-ai'} Component={AssistiveAI}/>
                         <Route path={'test/journey/:language'} Component={ProgrammingJourney}/>
                         <Route path={'test/question/:language'} Component={question}/>
+                        <Route path={'test/contest/:language'} Component={contest}/>
+                        <Route path={'test/contest/:language/invite/:accessToken'} Component={gamePreview}/>
                     </Routes>
                 </div>
             </div>

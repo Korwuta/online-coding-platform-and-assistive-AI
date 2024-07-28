@@ -1,10 +1,11 @@
 import Editor from '@monaco-editor/react'
 import {useState} from "react";
+import styles from './code-editor.module.css'
 
 
 export default function CodeEditor({language,value,code,size}){
     return(
-        <Editor height={`${size}vh`}
+        <Editor height={`${size}%`}
                 options={{
                     suggestOnTriggerCharacters:false,
                     fontSize:'15rem'

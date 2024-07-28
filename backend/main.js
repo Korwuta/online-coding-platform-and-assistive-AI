@@ -14,6 +14,7 @@ const runCode = require('./services/code/code-services')
 const avatar = require("./uploads/initials-generator");
 const tutorial = require('./services/journey/tutorials')
 const question = require('./services/question/question')
+const {wss,router} = require('./services/games/game')
 //variable declaration
 let dailyLogins = {}
 if(fs.existsSync(Path.join(__dirname,'logins'))){
@@ -49,6 +50,7 @@ app.use('/resetpassword',resetPassword)
 app.use('/services',runCode)
 app.use('/services',tutorial)
 app.use('/services',question)
+app.use('/services',router)
 app.get('/home',(req,res)=>{
     if(req.isAuthenticated()){
         // if(!dailyLogins[`Day${getDate()}`]){
@@ -72,9 +74,6 @@ app.get('/logout',(req,res)=>{
 app.get('/unsuccessful', (req, res) => {
     res.status(401).send({message:'Incorrect username or password'})
 });
-app.listen(3000,(req,res)=>{
-    console.log('server running on 3000')
-})
 app.get('/profile/:displayName',(req,res)=>{
     let initials = req.params.displayName.split(' ').map((word)=>word[0].toUpperCase()).join('')
     if(!fs.existsSync(Path.join(__dirname,`/public/profile/${initials}.png`))){
@@ -86,5 +85,20 @@ function getDate(){
     let date = new Date(Date.now())
     return `${date.getDay().toString().padStart(2,'0')}${date.getMonth().toString().padStart(2,'0')}${date.getFullYear()}`
 }
+
+const server = app.listen(3000,(req,res)=>{
+    console.log('server running on 3000')
+})
+app.get('/here',(req,res)=>{
+    console.log(req.body)
+    res.json({order:[{i:6},{i:9}]})
+})
+
+server.on('upgrade',(req, socket, head) =>{
+    const { pathname } = new URL(req.url, `wss://${req.headers.host}`).pathname;
+    wss.handleUpgrade(req,socket,head,(ws)=>{
+        wss.emit('connection', ws, req);
+    })
+})
 
 

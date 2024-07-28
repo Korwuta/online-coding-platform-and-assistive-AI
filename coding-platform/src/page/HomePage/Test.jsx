@@ -1,11 +1,12 @@
 import style from './test.module.css'
 import AnimatedCodeSVG from "./component/AnimatedCodeSVG.jsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import OptionsDialog from "./component/OptionsDialog.jsx";
 import {useState} from "react";
 import Question from "./component/question/Question.jsx";
 export default function Test(){
     const [optionDialog, setOptionDialog] = useState(null)
+    const navigate = useNavigate()
     function startCodeJourney(){
         const options = [
             {name:'Java',link:'/home/test/journey/java'},
@@ -22,6 +23,15 @@ export default function Test(){
         ]
         setOptionDialog(<OptionsDialog options={options} close={setOptionDialog}/>)
     }
+    function startContest(){
+        const options = [
+            {name:'Java',link:'/home/test/contest/java'},
+            {name: 'Python',link:'/home/test/contest/python'},
+            {name:'JavaScript',link:'/home/test/contest/javascript'}
+        ]
+        setOptionDialog(<OptionsDialog options={options} close={setOptionDialog}/>)
+    }
+
 
     return (
         <>
@@ -43,7 +53,9 @@ export default function Test(){
                         <span>Answer programming question to help you grasp programming questions better</span>
                     </div>
                 </div>
-                <div className={style.contestContainer}>
+                <div className={style.contestContainer}
+                     onClick={startContest}
+                >
                     <div>Compete with Others</div>
                 </div>
                 <div className={style.problemContainer}>

@@ -21,7 +21,7 @@ export default function TerminalComponent({size,output}){
         }
     }, [output]);
     return(
-        <section className={style.terminal} style={{height:`${size}vh`}} ref={terminalRef}>
+        <section className={style.terminal} style={{height:`${size}%`}} ref={terminalRef}>
 
         </section>
 

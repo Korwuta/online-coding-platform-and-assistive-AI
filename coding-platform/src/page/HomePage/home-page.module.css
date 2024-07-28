@@ -49,7 +49,7 @@
 .i{
     display: flex;
     flex-direction: column;
-    height: 88.5vh;
+    flex: 1;
     overflow-y: scroll;
 }
 .i p{

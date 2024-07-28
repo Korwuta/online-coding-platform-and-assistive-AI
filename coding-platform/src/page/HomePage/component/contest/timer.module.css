@@ -1,0 +1,26 @@
+.timer{
+    display: flex;
+    place-items: center;
+    background-color: black;
+    border-radius: 5px;
+    width: 125px;
+    border: 1px solid #1F1F1F;
+    gap: 10px;
+    padding: 10px 0 10px 20px;
+    font-size: 1rem;
+}
+.blink{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #EF4444;
+    animation: blink 7s ease infinite;
+}
+@keyframes blink {
+    0%,40%,80%{
+        opacity: 0.5;
+    }
+    20%,60%{
+        opacity: 1;
+    }
+}

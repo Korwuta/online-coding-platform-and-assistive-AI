@@ -74,9 +74,10 @@ export default function CodeSpace(){
                     </div>
                 </div>
             </div>
-            <CodeEditor language={language} value={setCode} code={code} size={openT?60:81.2}/>
-            {openT&&<TerminalComponent size={19.8} output={output}/>}
+            <CodeEditor language={language} value={setCode} code={code} size={openT?68:92}/>
+            {openT&&<TerminalComponent size={22} output={output}/>}
             {loading&&<LoadingBar/>}
+
         </>
     )
 }
