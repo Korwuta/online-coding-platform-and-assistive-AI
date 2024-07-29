@@ -7,18 +7,27 @@ import {useEffect} from "react";
 import {useParams} from "react-router-dom";
 import {useUser} from "../../../../statemanagement.jsx";
 import AccountFace from "./AccountFace.jsx";
+import useSound from 'use-sound'
+import beep from './sound/beep.wav'
+import {isEmpty} from "lodash/lang.js";
 const WSSInviteLink = 'ws://localhost:3000/';
+
+
 export default function(){
     const {accessToken} = useParams()
     const user = useUser(state => state.user)
+    const [play,{stop}] = useSound(beep)
     const {sendMessage,lastMessage} = useWebSocket(WSSInviteLink,{
         onOpen: ()=>console.log('connection Open')
     })
     useEffect(() => {
-        sendMessage(JSON.stringify({accessToken,user}))
+        sendMessage(JSON.stringify({event:'get-participants',accessToken,data:{user}}))
     }, []);
     useEffect(() => {
-        console.log(lastMessage?.data)
+        if(lastMessage){
+            console.log('here')
+            play()
+        }
     }, [lastMessage]);
     return(
         <div className={styles.preview}>
@@ -31,10 +40,12 @@ export default function(){
                 <Timer time={Date.now()+50000}/>
             </div>
             <div className={styles.participantConsole}>
-                <p>Game Hub</p>
+                <p style={{
+                    color:"#FFF3E1"
+                }}>Game Hub</p>
                 <div className={styles.participants}>
                     {
-                        lastMessage ? JSON.parse(lastMessage.data).map((value)=><AccountFace displayName={value.displayName}/>)
+                        lastMessage? JSON.parse(lastMessage.data).map((value)=><AccountFace id={value}/>)
                             : <span>Waiting for participants...</span>
                     }
                 </div>

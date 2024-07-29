@@ -15,6 +15,7 @@ const avatar = require("./uploads/initials-generator");
 const tutorial = require('./services/journey/tutorials')
 const question = require('./services/question/question')
 const {wss,router} = require('./services/games/game')
+const {getUserById} = require("./gateways/database");
 //variable declaration
 let dailyLogins = {}
 if(fs.existsSync(Path.join(__dirname,'logins'))){
@@ -92,6 +93,17 @@ const server = app.listen(3000,(req,res)=>{
 app.get('/here',(req,res)=>{
     console.log(req.body)
     res.json({order:[{i:6},{i:9}]})
+})
+app.get('/user/:id',(req,res)=>{
+    const id = req.params.id
+    if(!id){
+        return res.status(403).json({error:'id does not exist'})
+    }
+    getUserById(id).then((value)=>{
+        res.json(value)
+    }).catch((error)=>{
+        res.json({error:error.message})
+    })
 })
 
 server.on('upgrade',(req, socket, head) =>{

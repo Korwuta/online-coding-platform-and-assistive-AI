@@ -30,42 +30,47 @@ function handleWebSocket(wss){
         if(isEmpty(message)){
             return wss.send('invalid body')
         }
-        console.log(typeof message)
         if(checkIfJson(message)){
-            const {accessToken,user} = JSON.parse(message)
+            const {event,accessToken,data} = JSON.parse(message)
             if(!accessToken){
                 return wss.send('access token not involved')
             }
-            if(!user){
-                return wss.send('user id not involved')
-            }
-            console.log(user.id)
-            if(!groups[accessToken]){
-                groups[accessToken] = {wss:null,invite:[]}
-            }
-            jwt.verify(accessToken,'game',{},(err,decode)=>{
-                if(err){
-                    return console.log(err)
-                }
-                if(decode.creatorId === user.id){
-                    console.log('created')
-                    groups[accessToken].wss = wss
-                    if(!isEmpty(groups[accessToken].invite)){
-                        wss.send(JSON.stringify(groups[accessToken].invite))
+            switch (event){
+                case 'get-participants':
+                    const {user} = data
+                    if(!user && isEmpty(user)){
+                        return wss.send('user id not involved')
                     }
-                }else{
-                    const alreadyAdded = groups[accessToken].invite.find((value)=>{
-                       return value.id === user.id
+                    console.log(user)
+                    if(!groups[accessToken]){
+                        groups[accessToken] = {}
+                    }
+                    jwt.verify(accessToken,'game',{},(err,decode)=>{
+                        if(err){
+                            return console.log(err)
+                        }
+                        if(decode.creatorId === user.id){
+                            groups[accessToken][user.id] = {wss,role:'creator'}
+                            sendParticipants(groups[accessToken])
+                        }else{
+                            groups[accessToken][user.id] = {wss,role:'invitee'}
+                            sendParticipants(groups[accessToken])
+                        }
                     })
-                    if(!alreadyAdded){
-                        groups[accessToken].invite.push(user)
+                    break;
+                case 'add-participant':
+                    const {id,creatorId} = JSON.parse(message)
+                    if(!id){
+                        return console.log('id does not exist')
                     }
-                    if(groups[accessToken].wss){
-                        console.log('sent')
-                        groups[accessToken].wss.send(JSON.stringify(groups[accessToken].invite))
+                    if(!creatorId){
+                        return console.log('creator not found')
                     }
-                }
-            })
+                    groups[accessToken][id]?.wss.send('accepted')
+
+            }
+        }else{
+
         }
 
     })
@@ -79,6 +84,19 @@ function checkIfJson(JsonString){
         return false
     }
 
+}
+function sendParticipants(group){
+    for(let key in group){
+        if(group[key].role==='creator'){
+            const invites = Object.keys(group)
+                .filter(value=>value!==key)
+            if(!isEmpty(invites)){
+                group[key].wss
+                    .send(JSON.stringify(invites))
+            }
+
+        }
+    }
 }
 
 module.exports = {

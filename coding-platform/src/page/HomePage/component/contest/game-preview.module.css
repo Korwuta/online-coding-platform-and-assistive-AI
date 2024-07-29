@@ -16,7 +16,7 @@
 .participantConsole{
     height: 30vh;
     background-color: #1E1F22;
-    padding: 0px 32px;
+    padding: 0 32px;
     display: flex;
     flex-direction: column;
 }

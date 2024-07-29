@@ -84,6 +84,7 @@ async function getQuestion(language){
         [language])
     return res.rows
 }
+
 module.exports = {
     createUserLocal,
     createUserNonLocal,
