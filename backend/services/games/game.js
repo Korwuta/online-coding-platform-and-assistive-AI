@@ -6,6 +6,7 @@ const {isEmpty} = require("lodash/lang.js");
 const router = require('express').Router()
 const wssMap = {}
 const groups = {}
+const answer = {}
 router.post('/create-link',(req,res)=>{
     const {creatorId} = req.body;
     if(!creatorId){
@@ -31,44 +32,62 @@ function handleWebSocket(wss){
             return wss.send('invalid body')
         }
         if(checkIfJson(message)){
+            console.log(message)
             const {event,accessToken,data} = JSON.parse(message)
             if(!accessToken){
                 return wss.send('access token not involved')
             }
-            switch (event){
-                case 'get-participants':
-                    const {user} = data
-                    if(!user && isEmpty(user)){
-                        return wss.send('user id not involved')
-                    }
-                    console.log(user)
-                    if(!groups[accessToken]){
-                        groups[accessToken] = {}
-                    }
-                    jwt.verify(accessToken,'game',{},(err,decode)=>{
-                        if(err){
-                            return console.log(err)
+            jwt.verify(accessToken,'game',{},(err,decode)=>{
+                if(err){
+                    return console.log(err)
+                }
+                switch (event){
+                    case 'get-participants':
+                        const {user} = data
+                        if(!user && isEmpty(user)){
+                            return wss.send('user id not involved')
+                        }
+                        console.log(user)
+                        if(!groups[accessToken]){
+                            groups[accessToken] = {}
                         }
                         if(decode.creatorId === user.id){
-                            groups[accessToken][user.id] = {wss,role:'creator'}
+                            groups[accessToken][user.id] = {wss,role:'creator',status:'accepted'}
                             sendParticipants(groups[accessToken])
                         }else{
-                            groups[accessToken][user.id] = {wss,role:'invitee'}
+                            groups[accessToken][user.id] = {wss,role:'invitee',status:'unaccepted'}
                             sendParticipants(groups[accessToken])
                         }
-                    })
-                    break;
-                case 'add-participant':
-                    const {id,creatorId} = JSON.parse(message)
-                    if(!id){
-                        return console.log('id does not exist')
-                    }
-                    if(!creatorId){
-                        return console.log('creator not found')
-                    }
-                    groups[accessToken][id]?.wss.send('accepted')
+                        break;
+                    case 'add-participant':
+                        const {creatorId,id} = data
+                        if(!id){
+                            return console.log('id does not exist')
+                        }
+                        if(!creatorId){
+                            return console.log('creator not found')
+                        }
+                        if(creatorId===decode.creatorId){
+                            groups[accessToken][id].status = 'accepted'
+                            sendToAcceptedParticipants(groups[accessToken],id,creatorId)
+                            return
+                        }
+                        break;
+                    case 'start-contest':
+                        const question = 'Write a Python function called find_unique_numbers that takes a list of integers as input and returns a list of unique numbers from the input list in the order they first appeared.'
+                        sendToAllParticipants({event:"question",data:{question,time:Date.now()+30000}},groups[accessToken])
+                        setTimeout(()=>{
+                            sendToAllParticipants({event:"start-timeout",data:true},groups[accessToken])
+                        },30000)
+                        break
+                    case 'start-session':
+                        sendToAllParticipants({event:"start-session",data:{time:Date.now()+20000}},groups[accessToken])
+                        setTimeout(()=>{
+                            sendToAllParticipants({event:"game-end",data:true},groups[accessToken])
+                        },30000)
+                }
+            })
 
-            }
         }else{
 
         }
@@ -92,13 +111,26 @@ function sendParticipants(group){
                 .filter(value=>value!==key)
             if(!isEmpty(invites)){
                 group[key].wss
-                    .send(JSON.stringify(invites))
+                    .send(JSON.stringify({event:'send-request',data:invites}))
             }
 
         }
     }
 }
-
+function sendToAcceptedParticipants(group,id,creatorId){
+    const accepted = []
+    for(let key in group){
+        if(key !== id && key === creatorId && group[key].status === 'accepted'){
+            accepted.push(key)
+        }
+    }
+    group[id].wss.send(JSON.stringify({event:'request-accepted',data:accepted}))
+}
+function sendToAllParticipants(message,group){
+    for(let key in group){
+        group[key].wss.send(JSON.stringify(message))
+    }
+}
 module.exports = {
     router,
     wss

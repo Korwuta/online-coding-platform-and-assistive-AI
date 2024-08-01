@@ -21,8 +21,26 @@ const useUser = create(persist(
         getStorage:()=>sessionStorage
     }
 ))
+const useMessageStorage = create(persist(
+    set=>({
+        message:{},
+        time:Date.now(),
+        setMessage: (message,accessToken)=>set(state=>({
+            message:{...state.message,[accessToken]:message}
+        })),
+        setTime: (time)=>set({
+            time
+        })
+    }),
+    {
+        name:'message',
+        getStorage:()=>sessionStorage
+    }
+))
 export {
     useCode,
     useRequest,
-    useUser
+    useUser,
+    useMessageStorage
+
 }

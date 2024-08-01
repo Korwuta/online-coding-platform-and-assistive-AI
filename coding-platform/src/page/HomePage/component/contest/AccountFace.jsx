@@ -1,7 +1,7 @@
 import CircularImage from "../CircularImage.jsx";
 import {useEffect, useState} from "react";
 
-export default function ({id}) {
+export default function ({id,accepted,showAccept,size}) {
     const [displayName,setDisplayName] = useState(null)
     useEffect(() => {
         fetch(`http://localhost:3000/user/${id}`,{
@@ -30,12 +30,19 @@ export default function ({id}) {
             gap:"10px",
             placeItems:"center"
         }}>
-            <CircularImage src={`http://localhost:3000/profile/${displayName}`} alt={'profile'} size={55}/>
-            <span style={{fontSize:"0.8rem"}}>{displayName}</span>
-            <button style={{
-                fontSize:'0.8rem',
-                backgroundColor:'forestgreen'
-            }}>Accept</button>
+            <CircularImage src={`http://localhost:3000/profile/${displayName}`} alt={'profile'} size={size?size:55}/>
+            {
+                !size&&<>
+                    <span style={{fontSize:"0.8rem"}}>{displayName}</span>
+                    {showAccept && <button style={{
+                        fontSize: '0.8rem',
+                        backgroundColor: 'forestgreen'
+                    }} onClick={() => {
+                        accepted(id)
+                    }}
+                    >Accept</button>}
+                </>
+            }
         </div>
     )
 }
