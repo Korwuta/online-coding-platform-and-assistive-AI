@@ -24,13 +24,21 @@ const useUser = create(persist(
 const useMessageStorage = create(persist(
     set=>({
         message:{},
-        time:Date.now(),
+        time:{},
+        enable:{},
+        start:{},
         setMessage: (message,accessToken)=>set(state=>({
             message:{...state.message,[accessToken]:message}
         })),
-        setTime: (time)=>set({
-            time
-        })
+        setEnable: (isEnabled,accessToken)=>set(state=>({
+            enable:{...state.enable,[accessToken]:isEnabled}
+        })),
+        setStart: (isEnabled,accessToken)=>set(state=>({
+            start:{...state.start,[accessToken]:isEnabled}
+        })),
+        setTime: (time,accessToken)=>set(state=>({
+            time:{...state.time,[accessToken]:time}
+        }))
     }),
     {
         name:'message',

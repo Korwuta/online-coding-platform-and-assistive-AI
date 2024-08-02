@@ -4,7 +4,7 @@ export default function ({time}){
     return(
         <div className={styles.timer}>
             <div className={styles.blink}></div>
-            <Countdown date={time} daysInHours={true} autoStart={false}/>
+            <Countdown date={time} daysInHours={true} autoStart={!!time}/>
         </div>
     )
 }
