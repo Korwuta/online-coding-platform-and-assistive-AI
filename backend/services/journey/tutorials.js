@@ -7,6 +7,8 @@ router.get('/topic/:language',(req,res)=>{
     }
     getTopic(language).then((data)=>{
         res.json({output:data})
+    }).catch((err)=>{
+        console.log(err)
     })
 
 })
@@ -21,6 +23,8 @@ router.get('/tutorial/:language/:index',(req,res)=>{
     }
     getTutorial(language,index).then((data)=>{
         res.json({output:data})
+    }).catch((err)=>{
+        console.log(err)
     })
 })
 module.exports = router

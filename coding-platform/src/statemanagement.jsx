@@ -45,10 +45,23 @@ const useMessageStorage = create(persist(
         getStorage:()=>sessionStorage
     }
 ))
+const useJourneyStorage = create(persist(
+    set=>({
+        selectedTopic:{},
+        setSelectedTopic:(topic,language)=>set(state=>({
+            selectedTopic:{...state,[language]:topic}
+        }))
+    }),
+    {
+        name:'journey',
+        getStorage:()=>localStorage
+    }
+))
 export {
     useCode,
     useRequest,
     useUser,
-    useMessageStorage
+    useMessageStorage,
+    useJourneyStorage
 
 }

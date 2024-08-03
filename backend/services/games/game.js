@@ -77,10 +77,10 @@ function handleWebSocket(wss){
                         break;
                     case 'start-contest':
                         const question = 'Write a Python function called find_unique_numbers that takes a list of integers as input and returns a list of unique numbers from the input list in the order they first appeared.'
-                        sendToAllParticipants({event:"question",data:{question,time:Date.now()+2000}},groups[accessToken])
+                        sendToAllParticipants({event:"question",data:{question,time:Date.now()+30000}},groups[accessToken])
                         setTimeout(()=>{
                             sendToAllParticipants({event:"start-timeout",data:true},groups[accessToken])
-                        },2000)
+                        },30000)
                         break
                     case 'start-session':
                         sendToAllParticipants({event:"start-session",data:{time:Date.now()+200000}},groups[accessToken])

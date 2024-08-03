@@ -2,10 +2,11 @@ import styles from './programming-journey.module.css'
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Reader from "./Reader.jsx";
+import {useJourneyStorage} from "../../../../statemanagement.jsx";
 export default function ProgrammingJourney(){
     const [topics, setTopics] = useState([])
     const {language} = useParams()
-    const [selectedKey, setSelectedKey] = useState(0)
+    const [selectedKey, setSelectedKey] = useJourneyStorage(state=>[state?.selectedTopic?.[language],state?.setSelectedTopic])
     const [reader, setReader] = useState(null)
     useEffect(() => {
         fetch(`http://localhost:3000/services/topic/${language}`,{
@@ -27,7 +28,7 @@ export default function ProgrammingJourney(){
             });
     }, [language]);
     useEffect(() => {
-        fetch(`http://localhost:3000/services/tutorial/${language}/${selectedKey}`,{
+        fetch(`http://localhost:3000/services/tutorial/${language}/${selectedKey||0}`,{
             method:'GET',
             credentials:'include'
         }).then((response) => {
@@ -57,7 +58,7 @@ export default function ProgrammingJourney(){
                 <div>
                     <ul>
                         {
-                            topics.map((value)=>(<li onClick={()=>{setSelectedKey(value.index)}} key={value.index} >{value.name}</li>))
+                            topics.map((value)=>(<li onClick={()=>{setSelectedKey(value.index,language)}} key={value.index} >{value.name}</li>))
                         }
                     </ul>
                 </div>
