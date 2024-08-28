@@ -40,3 +40,35 @@
     place-content: space-between;
     padding: 10px 20px;
 }
+.writing span{
+    opacity: 1;
+    animation: blink 1s ease infinite;
+    animation-delay: calc(var(--index)*1s);
+}
+.status{
+    display: flex;
+    place-content: space-between;
+    place-items: center;
+    padding: 10px 20px 20px 0;
+}
+.loading{
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border: 3px solid gray;
+    border-radius: 50%;
+    border-top-color: gainsboro;
+    transform-origin: center center;
+    animation: rotate 0.7s ease infinite;
+}
+@keyframes rotate {
+    0%{
+        rotate: 360deg;
+    }
+
+}
+@keyframes blink {
+    from{
+        opacity: 0;
+    }
+}

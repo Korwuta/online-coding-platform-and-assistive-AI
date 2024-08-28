@@ -4,15 +4,18 @@ import {useQuestionStorage, useUser} from "../../statemanagement.jsx";
 import Chart from "react-apexcharts";
 import Bar from "./Bar.jsx";
 import {useEffect, useRef, useState} from "react";
+import LoadingBar from "../../LoadingBar.jsx";
 export default function(){
-    const [user,setImage,setDisplayName] = useUser(state=>([state?.user,state?.setUserImage,state?.setDisplayName]))
-    const [score,setScore] = useQuestionStorage(state => [state.score?.[user.id],state.setScore])
-    const [total,setTotal] = useQuestionStorage(state => [state.total?.[user.id],state.setTotal])
+    const [user,setUser] = useUser(state=>([state?.user,state?.setUser]))
+    const [score,setScore] = useQuestionStorage(state => [state.score?.[user?.id],state.setScore])
+    const [total,setTotal] = useQuestionStorage(state => [state.total?.[user?.id],state.setTotal])
     const [editProfile,setEditProfile] = useState(false)
+    const [loading, setLoading] = useState(false)
     const nameEL = useRef()
     const inputImage = useRef()
+    const [tempProfileImage, setTempProfileImage] = useState(null)
     useEffect(() => {
-        fetch(`http://localhost:3000/services/get-score/${user.id}`,{
+        fetch(`http://localhost:3000/services/get-score/${user?.id}`,{
             method: 'GET',
             credentials:"include",
         }).then((response) => {
@@ -37,19 +40,19 @@ export default function(){
         nameEL.current?.focus()
     }
     function updateProfile(){
-        setDisplayName(nameEL.current?.innerText)
-        sendProfile(nameEL.current?.innerText,user?.profileImage)
+        sendProfile(nameEL.current?.innerText,inputImage.current?.files[0])
         setEditProfile(false)
     }
     function sendProfile(displayName,profileImage){
-        fetch(`http://localhost:3000/user/update-profile/${user.id}`,{
+        setLoading(true)
+        const data = new FormData();
+        data.append('displayName',displayName)
+        data.append('id',user.id)
+        profileImage&&data.append('image',profileImage)
+        fetch(`http://localhost:3000/user/update-profile`,{
             method: 'POST',
-            body: JSON.stringify({displayName,profileImage}),
+            body: data,
             credentials:"include",
-            headers: {
-                'Cookies':'cookies.txt',
-                'Content-Type': 'application/json',
-            },
         }).then((response) => {
             if(!response.ok){
                 return response.json().then((data)=>{
@@ -59,9 +62,13 @@ export default function(){
             return response.json();
         })
             .then((data) => {
-                console.log(data)
+                if(data.success){
+                    setUser(data.user)
+                }
+                setLoading(false)
             })
             .catch((error) => {
+                setLoading(false)
                 console.log(error)
             });
     }
@@ -72,7 +79,7 @@ export default function(){
                    <div style={{
                        position:'relative',
                    }}>
-                       <CircularImage src={user?.profileImage||`http://localhost:3000/profile/${user?.displayName}`} alt={'profile'} size={150}/>
+                       <CircularImage src={tempProfileImage||user?.profileImage} alt={'profile'} size={150}/>
                        {editProfile&&<div className={styles.profileImageEdit} onClick={()=>{
                            inputImage.current?.click()
                        }}>
@@ -87,17 +94,17 @@ export default function(){
                                console.log(user?.displayName)
                                const reader = new FileReader()
                                reader.onload = ()=>{
-                                   setImage(reader.result)
+                                   setTempProfileImage(reader.result)
                                }
                                reader.readAsDataURL(e.target?.files[0])
                            }}/>
                        </div>}
                    </div>
                 </div>
-                <form onSubmit={(e) => {
+                <form onSubmit={(e)=>{
                     e.preventDefault()
                 }}>
-                    <p contentEditable={true} ref={nameEL}>{
+                    <p contentEditable={editProfile} ref={nameEL}>{
                         user?.displayName?.split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
                     }</p>
                     <div>
@@ -114,7 +121,7 @@ export default function(){
                             new Date(Date.now()).toDateString()
                         }</span>
                     </div>
-                    {editProfile?<button style={{
+                    {editProfile?<button onClick={updateProfile} style={{
                         position: 'absolute',
                         bottom: '30px',
                         left: '50%',
@@ -122,7 +129,7 @@ export default function(){
                         width: '80%',
                         fontSize: '1rem',
                         backgroundColor: '#0078D4'
-                    }} onClick={updateProfile}>Change</button>:<button style={{
+                    }} >Change</button>:<button style={{
                         position: 'absolute',
                         bottom: '30px',
                         left: '50%',
@@ -198,6 +205,7 @@ export default function(){
                     </div>
                 </div>
             </div>
+            {loading&&<LoadingBar/>}
         </div>
     )
 }

@@ -16,11 +16,20 @@ const tutorial = require('./services/journey/tutorials')
 const question = require('./services/question/question')
 const {wss,router} = require('./services/games/game')
 const {getUserById, updateProfile} = require("./gateways/database");
-//variable declaration
-let dailyLogins = {}
-if(fs.existsSync(Path.join(__dirname,'logins'))){
-    dailyLogins = fs.readFileSync(Path.join(__dirname,'logins')).toString()
-}
+const multer = require('multer')
+const crypt = require('crypto')
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, Path.join(__dirname,'/public/profile'))
+    },
+    filename: function (req, file, cb) {
+        const filename = crypt.randomUUID().toString()
+        cb(null, filename+Path.extname(file.originalname))
+    }
+})
+const upload = multer({ storage: storage })
+
+
 //middleware
 app = express()
 app.use(morgan('short'))
@@ -28,8 +37,9 @@ app.use(cors({
     origin:/http:\/\/localhost:\d+/,
     credentials: true
 }))
-app.use(express.static(Path.join(__dirname,'public')))
+app.use(express.static(Path.join(__dirname,'public/profile')))
 app.use(express.json())
+app.use(express.urlencoded({extended:true}))
 app.use((err, req, res, next)=>{
     if(err instanceof SyntaxError && err.statusCode === 400 && 'body' in err){
         console.log(err)
@@ -54,14 +64,6 @@ app.use('/services',question)
 app.use('/services',router)
 app.get('/home',(req,res)=>{
     if(req.isAuthenticated()){
-        // if(!dailyLogins[`Day${getDate()}`]){
-        //     dailyLogins[`Day${getDate()}`] = []
-        // }
-        // if(!dailyLogins[`Day${getDate()}`].includes(req.user)){
-        //     dailyLogins[`Day${getDate()}`].push(req.user)
-        //     fs.writeFileSync('logins',JSON.stringify(dailyLogins))
-        // }
-        console.log(req.user)
         res.json({message:"login successful",data:req.user})
     }else{
         res.redirect('/unsuccessful')
@@ -76,24 +78,10 @@ app.get('/logout',(req,res)=>{
 app.get('/unsuccessful', (req, res) => {
     res.status(401).send({message:'Incorrect username or password'})
 });
-app.get('/profile/:displayName',(req,res)=>{
-    let initials = req.params.displayName.split(' ').map((word)=>word[0].toUpperCase()).join('')
-    if(!fs.existsSync(Path.join(__dirname,`/public/profile/${initials}.png`))){
-        avatar(initials)
-    }
-    res.sendFile(Path.join(__dirname,`/public/profile/${initials}.png`))
-})
-function getDate(){
-    let date = new Date(Date.now())
-    return `${date.getDay().toString().padStart(2,'0')}${date.getMonth().toString().padStart(2,'0')}${date.getFullYear()}`
-}
 
-const server = app.listen(3000,(req,res)=>{
+
+const server = app.listen(process.env.PORT||3000,(req,res)=>{
     console.log('server running on 3000')
-})
-app.get('/here',(req,res)=>{
-    console.log(req.body)
-    res.json({order:[{i:6},{i:9}]})
 })
 app.get('/user/:id',(req,res)=>{
     const id = req.params.id
@@ -106,18 +94,28 @@ app.get('/user/:id',(req,res)=>{
         res.json({error:error.message})
     })
 })
-app.post('/user/update-profile/:id',(req,res)=>{
-    const {displayName,profileImage} = req.body
-    console.log(displayName)
-    console.log(profileImage)
-    const id = req.params.id
-    if(!/^[a-zA-Z]{5,}/.test(displayName)){
+app.post('/user/update-profile',upload.single('image'),(req,res)=>{
+    const {displayName,id} = req.body
+    const profileImage = req.file && new URL(`/${req.file.filename}`,process.env.BASE_URL).toString()
+    if(!/^[a-zA-Z]{3,}/.test(displayName)){
         return res.status(403).json({error:'invalid display name format'})
     }
-    updateProfile(id,displayName,profileImage).then((value)=>{
-        res.json({success:true})
-    }).catch((err)=>{
-        console.log(err)
+    getUserById(id).then(value => {
+        if(value['profile_image']){
+            const filename = new URL(value['profile_image']).pathname.split('/').pop()
+            fs.unlink(Path.join(__dirname,`/public/profile/${filename}`),()=>{})
+        }
+        updateProfile(id,displayName,profileImage||value['profile_image']).then((value)=>{
+            res.json({success:true,user:{
+                    id:value['id'],
+                    displayName:value['display_name'],
+                    email:value['email'],
+                    profileImage:value['profile_image']
+            }})
+        }).catch((err)=>{
+            console.log(err)
+            res.status(403).send('error')
+        })
     })
 })
 
@@ -143,5 +141,4 @@ server.on('upgrade',(req, socket, head) =>{
         wss.emit('connection', ws, req);
     })
 })
-
 

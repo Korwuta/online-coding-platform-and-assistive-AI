@@ -14,6 +14,6 @@ function generateInitialsAvatar(initials){
     context.textAlign = 'center'
     context.textBaseline = 'middle'
     context.fillText(initials,canvasSize/2,canvasSize/2)
-    fs.writeFileSync(`public/profile/${initials}.png`,canvas.toBuffer('image/png'))
+    return canvas.toBuffer('image/png')
 }
 module.exports = generateInitialsAvatar

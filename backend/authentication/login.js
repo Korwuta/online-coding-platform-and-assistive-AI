@@ -11,6 +11,7 @@ const Path = require('path')
 const __ = require("lodash/fp/__");
 const db = require('../gateways/database')
 const {data} = require("express-session/session/cookie");
+const avatar = require("../uploads/initials-generator");
 //variables
 let users = JSON.parse(fs.readFileSync(Path.join(__dirname,'../users')).toString())
 let auth = []
@@ -98,8 +99,12 @@ async function federatedLogin(profile,issuer,done){
     db.findAuthentication({subject: profile.id,issuer}).then(async (row)=>{
         let id = row&&row.user_id
         if(!row){
+            const initials = profile.displayName.split(' ').map((word)=>word[0].toUpperCase()).join('')
+            const imageId = crypt.randomUUID().toString()
+            fs.writeFileSync(Path.join(__dirname,`../public/profile/${imageId}`),avatar(initials))
+            const profileImage = new URL(`/${imageId}`,process.env.BASE_URL).toString()
             const res = await db.createUserNonLocal(
-                {issuer,subject:profile.id,displayName:profile.displayName})
+                {issuer,subject:profile.id,displayName:profile.displayName,profileImage})
             id = res.user_id
         }
         db.getUserById(id).then((row)=>{

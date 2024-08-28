@@ -6,8 +6,8 @@ const users = []
 const mailer = require('../gateways/mail-sender')
 const {token} = require("morgan");
 const db = require('../gateways/database')
-
-
+const avatar = require('../uploads/initials-generator')
+const Path = require("path");
 
 app.post('/registeruser/:token',(req, res)=>{
     let {newPassword} = req.body
@@ -20,9 +20,13 @@ app.post('/registeruser/:token',(req, res)=>{
             return res.status(403).json(    {message:'link expired'})
         }else{
             let salt = crypt.randomBytes(30)
+            const initials = decode.lastName.charAt(0) + decode.firstName.charAt(0)
+            const id = crypt.randomUUID().toString();
+            const imageId = crypt.randomUUID().toString();
+            fs.writeFileSync(Path.join(__dirname,`../public/profile/${imageId}`),avatar(initials))
             crypt.pbkdf2(newPassword,salt,252000,50,'sha256',(err, hashcode)=>{
                 db.createUserLocal({
-                    id: crypt.randomUUID().toString(),
+                    id,
                     firstName:decode.firstName,
                     lastName:decode.lastName,
                     email:decode.email,
@@ -30,7 +34,8 @@ app.post('/registeruser/:token',(req, res)=>{
                     salt:salt,
                     username: decode.username,
                     displayName:`${decode.firstName} ${decode.lastName}`,
-                    createdAt: Date.now()
+                    createdAt: Date.now(),
+                    profileImage: new URL(`/${imageId}`,process.env.BASE_URL).toString()
                 }).then(()=>{
                     return res.json({message:'account created successful'})
                 }).catch((err)=>{

@@ -3,8 +3,13 @@ const wss = new WebSocketServer({noServer:true})
 const jwt = require('jsonwebtoken')
 const {decode, verify} = require("jsonwebtoken");
 const {isEmpty} = require("lodash/lang.js");
-const {getContestQuestion} = require("../../gateways/database");
+const {getContestQuestion, getCodeDependency} = require("../../gateways/database");
 const {language} = require("googleapis/build/src/apis/language");
+const Path = require("path");
+const fs = require("fs");
+const {exec} = require("child_process");
+const {PythonShell} = require("python-shell");
+const vm = require("vm");
 const router = require('express').Router()
 const wssMap = {}
 const groups = {}
@@ -42,7 +47,7 @@ function handleWebSocket(wss){
                 if(err){
                     return console.log(err)
                 }
-                const {user,id,creatorId,answer,completeTime} = data || {}
+                const {user,id,creatorId,answer,completeTime,language,question_id} = data || {}
                 switch (event){
                     case 'get-participants':
                         if(!user && isEmpty(user)){
@@ -79,12 +84,13 @@ function handleWebSocket(wss){
                         }
                         break;
                     case 'start-contest':
+                        const timeout = 10000
                         getContestQuestion('python').then((value)=>{
-                            sendToAllParticipants({event:"question",data:{question:value['question'],time:Date.now()+30000}},groups[accessToken])
+                            sendToAllParticipants({event:"question",data:{question:{id:value['question_id'],text:value['question']},time:Date.now()+timeout}},groups[accessToken])
                             setTimeout(()=>{
                                 sendToAllParticipants({event:"start-timeout",data:true},groups[accessToken])
-                            },30000)
-                        })
+                            },timeout)
+                        }).catch((err=>console.log(err)))
                         break
                     case 'start-session':
                         thosePlaying(groups[accessToken],id)
@@ -103,6 +109,18 @@ function handleWebSocket(wss){
                                 groups[accessToken][key].wss.send(JSON.stringify({event:'finish',data:{id,completeTime}}))
                             }
                         }
+                        console.log(answer,language,question_id)
+                        isRight(answer,language,question_id).then((right)=>{
+                            if(right){
+                                if(!Object.keys(groups[accessToken])
+                                    .map(id => groups[accessToken][id]?.isWinner)
+                                    .some(value=>!!value)){
+                                    console.log('here')
+                                    groups[accessToken][id].isWinner = true
+                                    sendToAllParticipants({event:"winner",data:{id:id}},groups[accessToken])
+                                }
+                            }
+                        }).catch((err)=>console.log(err))
                 }
             })
 
@@ -158,6 +176,110 @@ function sendToAllParticipants(message,group){
     for(let key in group){
         group[key].wss.send(JSON.stringify(message))
     }
+}
+
+async function isRight(answer,language1,questionId){
+    const language = language1.toLowerCase()
+    let notError = false
+    try{
+        switch (language){
+            case 'java':
+                notError = await runJavaCode(answer)
+                console.log(notError)
+                if(notError){
+                    const answer_key = (await getCodeDependency(questionId))['answer_key']
+                    console.log(answer_key)
+                    return containString(answer,answer_key)
+                }
+                return false
+            case 'python':
+                notError = await runPython(answer)
+                console.log(notError)
+                if(notError){
+                    const answer_key = (await getCodeDependency(questionId))['answer_key']
+                    console.log(answer_key+'dfjljlkdjfls')
+                    console.log(containString(answer,answer_key))
+                    console.log(answer+'\n',answer_key)
+                    return containString(answer,answer_key)
+                }
+                return false
+            case 'javascript':
+                notError = await runJavaScript(answer)
+                if(notError){
+                    const answer_key = (await getCodeDependency(questionId))['answer_key']
+                    return containString(answer,answer_key)
+                }
+                return false
+        }
+    }catch (err){
+        return false
+    }
+}
+function runJavaCode(userCode){
+    const filePath = Path.join(__dirname,`../../temp/${Math.floor(Math.random()*1e19)}.java`)
+    return new Promise((resolve,reject)=>{
+        fs.writeFile(filePath, userCode, (err) => {
+            // Compile the Java file
+            exec(`java ${filePath}`, (compileErr, compileStdout, compileStderr) => {
+                fs.unlink(filePath,()=>{});
+                resolve(!compileErr)
+            });
+        });
+    })
+
+}
+function runPython(userCode,res){
+    const id = Math.floor(Math.random()*1e19)
+    const filePath = Path.join(__dirname,`../../temp/${id}.py`)
+    const options = {
+        mode: 'text',
+        pythonOptions: ['-u'],
+        scriptPath: './temp',
+    }
+    return new Promise((resolve,reject)=>{
+        fs.writeFile(filePath,userCode,(err)=>{
+            if (err) {
+                return res.json({output:['internal error']})
+            }
+            PythonShell.run(`${id}.py`,options).then((result)=>{
+                fs.unlink(filePath,()=>{})
+                resolve(true)
+            }).catch((err)=>{
+                console.log(err)
+                resolve(false)
+            })
+        })
+    })
+}
+function runJavaScript(userCode){
+    let output = [];
+    const sandbox = {
+        console: {
+            log: (...args) => output.push(args.join(' '))
+        }
+    }
+    return new Promise((resolve, reject)=>{
+        try {
+            const script = new vm.Script(`${userCode}`);
+            script.runInNewContext(sandbox, { timeout: 5000 });
+            resolve(true)
+        } catch (error) {
+            let errorDetail = {
+                name:error.stack.substring(0,error.stack.indexOf('SyntaxError')).
+                replace("evalmachine.<anonymous>","LINE"),
+                message:error.message
+            }
+            resolve(false)
+        }
+    })
+}
+
+function containString(string,substring){
+    return string
+        .trim()
+        .split(' ')
+        .join('')
+        .includes(substring.trim().split(' ').join(''))
 }
 module.exports = {
     router,

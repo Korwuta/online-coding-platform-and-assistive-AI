@@ -5,9 +5,13 @@ import CircularImage from "../CircularImage.jsx";
 import {useEffect, useState} from "react";
 import {isEmpty} from "lodash/lang.js";
 import FinishTimes from "./FinishTimes.jsx";
+import Celebration from "./Celebration.jsx";
+import HorizontalAccount from "./HorizontalAccount.jsx";
+import {useUser} from "../../../../statemanagement.jsx";
 
 
-export default function ({minute,second,id,thosePlaying,end}){
+export default function ({minute,second,id,thosePlaying,end,winner}){
+    const user = useUser(state => state?.user)
     const [displayName, setDisplayName] = useState()
     useEffect(() => {
         console.log(end)
@@ -41,13 +45,18 @@ export default function ({minute,second,id,thosePlaying,end}){
                             <FinishTimes id={id} minute={minute} second={second} name={'You'}/>
                         </li>
                         {
-                            !isEmpty(thosePlaying)&&thosePlaying.map((value)=> <li>
+                            !isEmpty(thosePlaying) && thosePlaying.map((value) => <li>
                                 <FinishTimes id={value} minute={end?.[value]?.minute} second={end?.[value]?.second}/>
                             </li>)
                         }
                     </ul>
+                    {!winner?<div className={styles.status}><p>Analyzing code</p>
+                        <div className={styles.loading}></div>
+                    </div>:<div className={styles.status}
+                    ><HorizontalAccount id={winner}/><p>winner</p></div>}
                 </div>
             </div>
+            {winner===user?.id && < Celebration/>}
         </div>
     )
 }

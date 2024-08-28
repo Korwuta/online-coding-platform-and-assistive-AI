@@ -99,7 +99,7 @@ export default function Home(){
                     <div className={style.leftOption}>
                         <Notification/>
                         <div className={style.name}>
-                            <CircularImage src={user.profileImage||`http://localhost:3000/profile/${user?.displayName}`} alt={'profile'} size={35}/>
+                            <CircularImage src={user?.profileImage} alt={'profile'} size={35}/>
                             <div>
                                 <label>{user?.displayName}</label>
                                 <label>Admin</label>

@@ -1,6 +1,5 @@
 import {create} from 'zustand'
-import {persist} from "zustand/middleware";
-
+import {persist,createJSONStorage} from "zustand/middleware";
 const useCode = create((set)=>({
     code:'',
     language:'',
@@ -24,7 +23,7 @@ const useUser = create(persist(
     }),
     {
         name:'user',
-        getStorage:()=>sessionStorage
+        storage:createJSONStorage(()=>sessionStorage)
     }
 ))
 const useMessageStorage = create(persist(
@@ -37,6 +36,11 @@ const useMessageStorage = create(persist(
         openCompletionDialog:{},
         leaveTime:{},
         endDetail:{},
+        question:{},
+        winner:{},
+        setWinner:(winner,accessToken)=>set(state=>({
+            winner:{...state.winner,[accessToken]:winner}
+        })),
         setMessage: (message,accessToken)=>set(state=>({
             message:{...state.message,[accessToken]:message}
         })),
@@ -48,6 +52,9 @@ const useMessageStorage = create(persist(
         })),
         setTime: (time,accessToken)=>set(state=>({
             time:{...state.time,[accessToken]:time}
+        })),
+        setQuestion: (question,accessToken)=>set(state=>({
+            question:{...state.question,[accessToken]:question}
         })),
         setThosePlaying: (people,accessToken)=>set(state=>({
             thosePlaying:{...state.thosePlaying,[accessToken]:people}
@@ -64,7 +71,7 @@ const useMessageStorage = create(persist(
     }),
     {
         name:'message',
-        getStorage:()=>sessionStorage
+        storage: createJSONStorage(()=>sessionStorage)
     }
 ))
 const useJourneyStorage = create(persist(
@@ -76,7 +83,7 @@ const useJourneyStorage = create(persist(
     }),
     {
         name:'journey',
-        getStorage:()=>localStorage
+        storage:createJSONStorage(()=>localStorage)
     }
 ))
 const useQuestionStorage = create(

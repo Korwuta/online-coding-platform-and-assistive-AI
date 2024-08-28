@@ -11,18 +11,18 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000,
 })
 
-async function createUserLocal({id,firstName,lastName,username,email,password,createdAt,displayName,salt}){
+async function createUserLocal({id,firstName,lastName,username,email,password,createdAt,displayName,salt,profileImage}){
     const res = await pool.
     query(
-        'INSERT INTO "Users"(id,first_name,last_name,username,email,password_hash,created_at,display_name,salt) VALUES($1,$2,$3,$4,$5,$6,CURRENT_TIMESTAMP,$7,$8) RETURNING *',
-        [id,firstName,lastName,username,email,password,displayName,salt])
+        'INSERT INTO "Users"(id,first_name,last_name,username,email,password_hash,created_at,display_name,salt,profile_image) VALUES($1,$2,$3,$4,$5,$6,CURRENT_TIMESTAMP,$7,$8,$9) RETURNING *',
+        [id,firstName,lastName,username,email,password,displayName,salt,profileImage])
     return res.rows[0]
 }
-async function createUserNonLocal({issuer,subject,displayName}){
+async function createUserNonLocal({issuer,subject,displayName,profileImage}){
     let id = crypt.randomUUID()
     const userInserted = await pool.
-        query('INSERT INTO "Users"(id,display_name,created_at) VALUES($1,$2,CURRENT_TIMESTAMP)',
-        [id,displayName])
+        query('INSERT INTO "Users"(id,display_name,created_at,profile_image) VALUES($1,$2,CURRENT_TIMESTAMP,$3)',
+        [id,displayName,profileImage])
     if(userInserted){
         const res = await pool.
         query(
@@ -117,13 +117,19 @@ async function getScore(userId){
     return res.rows[0]
 }
 async function updateProfile(id,displayName,profileImage){
-    const res = await pool.
+    return (await pool.
     query(
         `UPDATE "Users" SET display_name = $1, profile_image = $2 WHERE id = $3 RETURNING *`,
-        [displayName,profileImage,id])
+        [displayName,profileImage,id])).rows[0]
+
+}
+async function getCodeDependency(questionId){
+    const res = await pool.
+    query(
+        `SELECT code_output,answer_key FROM "Question" WHERE question_id=$1`,
+        [questionId])
     return res.rows[0]
 }
-
 module.exports = {
     createUserLocal,
     createUserNonLocal,
@@ -137,5 +143,6 @@ module.exports = {
     getContestQuestion,
     setAnswer,
     getScore,
-    updateProfile
+    updateProfile,
+    getCodeDependency,
 }
