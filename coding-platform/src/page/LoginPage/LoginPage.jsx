@@ -9,13 +9,15 @@ import microsoft from './microsoft.svg'
 import {useEffect, useState} from "react";
 import errorSVG from './error.svg'
 import LoadingBar from "../../LoadingBar.jsx";
+import {useUser} from "../../statemanagement.jsx";
+import {color} from "framer-motion";
 export default function LoginPage(){
     const [username,setUsername] = useState("")
     const [password,setPassword] = useState("")
     const [loginError,setLoginError] = useState(false)
     const [load,setLoad] = useState(false)
     const navigate = useNavigate()
-
+    const [user,setUser] = useUser(state=>([state?.user,state?.setUser]))
     useEffect(() => {
         fetch('http://localhost:3000/home',{
             method:'GET',
@@ -29,7 +31,8 @@ export default function LoginPage(){
             return response.json();
         })
             .then((data) => {
-                navigate('/home',{state:data.data})
+                setUser(data.data)
+                navigate('/home')
             })
             .catch((error) => {
 
@@ -59,7 +62,8 @@ export default function LoginPage(){
             .then((data) => {
                 setLoginError(false)
                 setLoad(false)
-                navigate('/home',{state:data.data})
+                setUser(data.data)
+                navigate('/home/test')
             })
             .catch((error) => {
                 setLoginError(true)

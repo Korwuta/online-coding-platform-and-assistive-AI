@@ -3,7 +3,6 @@ import AnimatedCodeSVG from "./component/AnimatedCodeSVG.jsx";
 import {Link, useNavigate} from "react-router-dom";
 import OptionsDialog from "./component/OptionsDialog.jsx";
 import {useState} from "react";
-import Question from "./component/question/Question.jsx";
 export default function Test(){
     const [optionDialog, setOptionDialog] = useState(null)
     const navigate = useNavigate()

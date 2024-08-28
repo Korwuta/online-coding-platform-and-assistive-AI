@@ -27,17 +27,19 @@ passport.deserializeUser((id, done) => {
         if(!row){
             done(null,false,{message:'user not found'})
         }
-        done(null,{id:row.id,displayName:row.display_name})
+        done(null,{id:row.id,displayName:row.display_name,email:row.email,profileImage:row.profile_image})
     })
 });
 passport.use(new LocalStrategy((username, password, done) => {
     db.getUserWithUsername(username).then((row)=>{
+        console.log(row)
         if(!row){
             return done(null,false,{message:'incorrect username or password'})
         }
         crypt.pbkdf2(password,Buffer.from(row.salt),252000,50,'sha256',(err,hashcode)=>{
             if(crypt.timingSafeEqual(hashcode,Buffer.from(row.password_hash))){
-                return done(null,{id:row.id,displayName:row.displayName})
+                console.log({id:row.id,displayName:row.displayName,email:row.email})
+                return done(null,{id:row.id,displayName:row.displayName,email:row.email})
             }
             return done(null,false,{message:'incorrect username or password'})
         })

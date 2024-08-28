@@ -1,17 +1,20 @@
 import styles from './question-card.module.css'
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Highlight from "react-highlight";
 export default function({value,number,answer}){
     const [selectedValue, setSelectedValue] = useState(null)
     function handleChange(e){
         setSelectedValue((prevState)=>{
-            console.log(prevState)
             if(prevState===e.target.value){
                 return null
             }
             return e.target.value
         })
     }
+
+    useEffect(() => {
+        answer&&answer(value['question_id'],selectedValue)
+    }, [selectedValue]);
 
     return(
         <div className={styles.questionCard} key={value['question_id']}>

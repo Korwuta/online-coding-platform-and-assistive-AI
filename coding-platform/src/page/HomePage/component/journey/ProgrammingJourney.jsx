@@ -26,6 +26,7 @@ export default function ProgrammingJourney(){
             .catch((error) => {
                 console.log(error)
             });
+
     }, [language]);
     useEffect(() => {
         fetch(`http://localhost:3000/services/tutorial/${language}/${selectedKey||0}`,{
@@ -40,6 +41,7 @@ export default function ProgrammingJourney(){
             return response.json();
         })
             .then((data) => {
+                console.log('hiii')
                 setReader(data.output)
             })
             .catch((error) => {

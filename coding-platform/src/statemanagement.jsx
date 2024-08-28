@@ -13,8 +13,14 @@ const useRequest = create(set=>({
 }))
 const useUser = create(persist(
     set=>({
-        user:{},
-        setUser:(user)=>set({user:user})
+        user:null,
+        setUser:(user)=>set({user:user}),
+        setDisplayName:(displayName)=>set(state=>({
+            user:{...state.user,displayName}
+        })),
+        setUserImage:(image)=>set(state=>({
+            user:{...state.user,profileImage:image}
+        }))
     }),
     {
         name:'user',
@@ -27,6 +33,10 @@ const useMessageStorage = create(persist(
         time:{},
         enable:{},
         start:{},
+        thosePlaying:{},
+        openCompletionDialog:{},
+        leaveTime:{},
+        endDetail:{},
         setMessage: (message,accessToken)=>set(state=>({
             message:{...state.message,[accessToken]:message}
         })),
@@ -38,6 +48,18 @@ const useMessageStorage = create(persist(
         })),
         setTime: (time,accessToken)=>set(state=>({
             time:{...state.time,[accessToken]:time}
+        })),
+        setThosePlaying: (people,accessToken)=>set(state=>({
+            thosePlaying:{...state.thosePlaying,[accessToken]:people}
+        })),
+        setOpenCompletionDialog:(bool,accessToken)=>set(state=>({
+            openCompletionDialog:{...state.openCompletionDialog,[accessToken]:bool}
+        })),
+        setLeaveTime:(value,accessToken)=>set(state=>({
+            leaveTime:{...state.leaveTime,[accessToken]:value}
+        })),
+        setEndDetail:(value,accessToken)=>set(state=>({
+            endDetail:{...state.endDetail,[accessToken]:value}
         }))
     }),
     {
@@ -57,11 +79,23 @@ const useJourneyStorage = create(persist(
         getStorage:()=>localStorage
     }
 ))
+const useQuestionStorage = create(
+    set=>({
+        score:{},
+        setScore:(score,userId)=>set(state=>({
+            score:{...state.score,[userId]:score}
+        })),
+        total:{},
+        setTotal:(total,userId)=>set(state=>({
+            total:{...state.total,[userId]:total}
+        })),
+    }),
+)
 export {
     useCode,
     useRequest,
     useUser,
     useMessageStorage,
-    useJourneyStorage
-
+    useJourneyStorage,
+    useQuestionStorage
 }

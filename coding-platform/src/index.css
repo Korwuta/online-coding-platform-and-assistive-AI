@@ -94,3 +94,7 @@ ul{
   font-family: 'Work Sans';
   src: url("./assets/WorkSans-VariableFont_wght.ttf");
 }
+@font-face {
+  font-family: "Manrope";
+  src: url("./assets/Manrope-VariableFont_wght.ttf");
+}

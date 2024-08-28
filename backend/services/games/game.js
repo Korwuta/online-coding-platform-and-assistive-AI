@@ -3,6 +3,8 @@ const wss = new WebSocketServer({noServer:true})
 const jwt = require('jsonwebtoken')
 const {decode, verify} = require("jsonwebtoken");
 const {isEmpty} = require("lodash/lang.js");
+const {getContestQuestion} = require("../../gateways/database");
+const {language} = require("googleapis/build/src/apis/language");
 const router = require('express').Router()
 const wssMap = {}
 const groups = {}
@@ -40,7 +42,7 @@ function handleWebSocket(wss){
                 if(err){
                     return console.log(err)
                 }
-                const {user,id,creatorId,answer} = data || {}
+                const {user,id,creatorId,answer,completeTime} = data || {}
                 switch (event){
                     case 'get-participants':
                         if(!user && isEmpty(user)){
@@ -72,24 +74,35 @@ function handleWebSocket(wss){
                         if(creatorId===decode.creatorId){
                             groups[accessToken][id].status = 'accepted'
                             sendToAcceptedParticipants(groups[accessToken],id,creatorId)
+                            sendParticipants(groups[accessToken])
                             return
                         }
                         break;
                     case 'start-contest':
-                        const question = 'Write a Python function called find_unique_numbers that takes a list of integers as input and returns a list of unique numbers from the input list in the order they first appeared.'
-                        sendToAllParticipants({event:"question",data:{question,time:Date.now()+30000}},groups[accessToken])
-                        setTimeout(()=>{
-                            sendToAllParticipants({event:"start-timeout",data:true},groups[accessToken])
-                        },30000)
+                        getContestQuestion('python').then((value)=>{
+                            sendToAllParticipants({event:"question",data:{question:value['question'],time:Date.now()+30000}},groups[accessToken])
+                            setTimeout(()=>{
+                                sendToAllParticipants({event:"start-timeout",data:true},groups[accessToken])
+                            },30000)
+                        })
                         break
                     case 'start-session':
+                        thosePlaying(groups[accessToken],id)
                         sendToAllParticipants({event:"start-session",data:{time:Date.now()+200000}},groups[accessToken])
                         setTimeout(()=>{
                             sendToAllParticipants({event:"game-end",data:true},groups[accessToken])
                         },200000)
                         break
                     case 'send-answer':
-                        answer[id] = answer
+                        console.log(completeTime)
+                        groups[accessToken][id].status = 'finished'
+                        groups[accessToken][id].finishTime = completeTime
+                        for(let key in groups[accessToken]){
+                            if(key!==id){
+                                console.log(key)
+                                groups[accessToken][key].wss.send(JSON.stringify({event:'finish',data:{id,completeTime}}))
+                            }
+                        }
                 }
             })
 
@@ -113,7 +126,8 @@ function sendParticipants(group){
     for(let key in group){
         if(group[key].role==='creator'){
             const invites = Object.keys(group)
-                .filter(value=>value!==key)
+                .filter(value=>value!==key).map((value)=>({id:value,status:group[value].status}))
+            console.log(invites)
             if(!isEmpty(invites)){
                 group[key].wss
                     .send(JSON.stringify({event:'send-request',data:invites}))
@@ -126,10 +140,19 @@ function sendToAcceptedParticipants(group,id,creatorId){
     const accepted = []
     for(let key in group){
         if(key !== id && key === creatorId && group[key].status === 'accepted'){
-            accepted.push(key)
+            accepted.push({id:key,status:"accepted"})
         }
     }
     group[id].wss.send(JSON.stringify({event:'request-accepted',data:accepted}))
+}
+function thosePlaying(group,id){
+    const accepted = []
+    for(let key in group){
+        if(key !== id && group[key].status === 'accepted'){
+            accepted.push(key)
+        }
+    }
+    group[id].wss.send(JSON.stringify({event:'those-playing',data:accepted}))
 }
 function sendToAllParticipants(message,group){
     for(let key in group){

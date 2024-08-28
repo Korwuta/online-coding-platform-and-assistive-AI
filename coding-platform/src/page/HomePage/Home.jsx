@@ -21,31 +21,15 @@ import ProgrammingJourney from "./component/journey/ProgrammingJourney.jsx";
 import question from "./component/question/Question.jsx";
 import contest from "./component/contest/Contest.jsx";
 import gamePreview from "./component/contest/GamePreview.jsx";
+import Dashboard from "./Dashboard.jsx";
 export default function Home(){
-    const location = useLocation()
     const navigate = useNavigate()
-    const [user,setUser] = useUser(state=>([state.user,state.setUser]))
+    const [user,setUser] = useUser(state=>([state?.user,state?.setUser]))
     useEffect(() => {
-        console.log(location.state)
-        fetch('http://localhost:3000/home',{
-            method:'GET',
-            credentials:'include'
-        }).then((response) => {
-            if(!response.ok){
-                return response.json().then((data)=>{
-                    throw new Error(data.message)
-                })
-            }
-            return response.json();
-        })
-            .then((data) => {
-                setUser(data.data)
-                console.log(user)
-            })
-            .catch((error) => {
-                navigate('/login')
-            });
-    }, [user.id]);
+        if(!user){
+            navigate('/login')
+        }
+    }, [user]);
     function navLink({isActive,isPending}){
         return `${style.navLink} ${isActive&&style.active}`
     }
@@ -62,7 +46,7 @@ export default function Home(){
             return response.json();
         })
             .then((data) => {
-                console.log(data)
+                setUser(null)
             })
             .catch((error) => {
                 console.log(error)
@@ -103,7 +87,7 @@ export default function Home(){
                     <ul>
                         <li>
                             <NavLink to={'/login'} className={navLink} onClick={onLogout}>
-                            <img src={logoutSVG} alt={'ai'}/>
+                                <img src={logoutSVG} alt={'ai'}/>
                                 Log Out</NavLink>
                         </li>
                     </ul>
@@ -115,9 +99,9 @@ export default function Home(){
                     <div className={style.leftOption}>
                         <Notification/>
                         <div className={style.name}>
-                            <CircularImage src={`http://localhost:3000/profile/${user.displayName}`} alt={'profile'} size={35}/>
+                            <CircularImage src={user.profileImage||`http://localhost:3000/profile/${user?.displayName}`} alt={'profile'} size={35}/>
                             <div>
-                                <label>{user.displayName}</label>
+                                <label>{user?.displayName}</label>
                                 <label>Admin</label>
                             </div>
                         </div>
@@ -126,6 +110,7 @@ export default function Home(){
                 <div className={style.i}>
                     <Routes>
                         <Route path={'code-space'} Component={CodeSpace}/>
+                        <Route path={''} Component={Dashboard}/>
                         <Route path={'test'} Component={Test}/>
                         <Route path={'assistive-ai'} Component={AssistiveAI}/>
                         <Route path={'test/journey/:language'} Component={ProgrammingJourney}/>

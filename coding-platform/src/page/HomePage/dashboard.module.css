@@ -1,0 +1,96 @@
+.dashboard{
+    flex: 1;
+    display: flex;
+    place-items: center;
+    contain: paint;
+    font-family: "Manrope",sans-serif;
+}
+.profileSection{
+    width: 40%;
+    height: 100%;
+    background-color: #1E1F22;
+    position: relative;
+
+}
+.profileImageDiv{
+    display: flex;
+    place-items: center;
+    place-content: center;
+    height: 40%;
+    background-color: #2B2D30;
+}
+.profileSection form{
+    padding: 30px 40px;
+    display: grid;
+}
+.profileSection form>div{
+    padding: 20px 0;
+    border-bottom: 1px solid #313030;
+}
+.profileSection form p{
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: white;
+}
+.profileSection form span{
+    font-size: 0.9rem;
+    color: whitesmoke;
+}
+.profileSection form label{
+    color: antiquewhite;
+    font-size: 0.85rem;
+}
+.activity{
+    flex: 1;
+    height: 100%;
+    display: flex;
+    place-content: center;
+}
+.strength{
+    display: grid;
+    place-self: center;
+    height: 90%;
+    width: 80%;
+    margin: 0 30px;
+    background-color: #2B2D30;
+    border-radius: 30px;
+}
+.detail{
+    display: flex;
+    flex-direction: column;
+    place-content: center;
+    gap: 30px;
+    margin: 10px 50px;
+}
+.detail label>:first-child{
+    width: 15%;
+}
+.detail label>:nth-child(2){
+    flex: 1;
+}
+.detail label>:last-child{
+    width: 15%;
+    text-align: right;
+}
+.bar{
+    animation: increase 0.6s ease;
+}
+.profileImageEdit{
+    position:absolute;
+    bottom:0;
+    right:0;
+    animation: appear 0.5s ease;
+}
+@keyframes increase {
+    from{
+        width: 0;
+    }
+
+}
+@keyframes appear {
+    from{
+        opacity: 0.8;
+        scale: 0.7;
+    }
+}

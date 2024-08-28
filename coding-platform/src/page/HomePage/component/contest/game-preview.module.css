@@ -58,3 +58,10 @@
 .start:hover{
     background-color: #505050;
 }
+.preview svg{
+    cursor: pointer;
+}
+
+.preview svg:hover{
+    opacity: 0.8;
+}

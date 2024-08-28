@@ -15,7 +15,7 @@ const avatar = require("./uploads/initials-generator");
 const tutorial = require('./services/journey/tutorials')
 const question = require('./services/question/question')
 const {wss,router} = require('./services/games/game')
-const {getUserById} = require("./gateways/database");
+const {getUserById, updateProfile} = require("./gateways/database");
 //variable declaration
 let dailyLogins = {}
 if(fs.existsSync(Path.join(__dirname,'logins'))){
@@ -61,6 +61,7 @@ app.get('/home',(req,res)=>{
         //     dailyLogins[`Day${getDate()}`].push(req.user)
         //     fs.writeFileSync('logins',JSON.stringify(dailyLogins))
         // }
+        console.log(req.user)
         res.json({message:"login successful",data:req.user})
     }else{
         res.redirect('/unsuccessful')
@@ -101,6 +102,36 @@ app.get('/user/:id',(req,res)=>{
     }
     getUserById(id).then((value)=>{
         res.json(value)
+    }).catch((error)=>{
+        res.json({error:error.message})
+    })
+})
+app.post('/user/update-profile/:id',(req,res)=>{
+    const {displayName,profileImage} = req.body
+    console.log(displayName)
+    console.log(profileImage)
+    const id = req.params.id
+    if(!/^[a-zA-Z]{5,}/.test(displayName)){
+        return res.status(403).json({error:'invalid display name format'})
+    }
+    updateProfile(id,displayName,profileImage).then((value)=>{
+        res.json({success:true})
+    }).catch((err)=>{
+        console.log(err)
+    })
+})
+
+app.get('/user/:id/image',(req,res)=>{
+    const id = req.params.id
+    if(!id){
+        return res.status(403).json({error:'id does not exist'})
+    }
+    getUserById(id).then((value)=>{
+        let initials = value['display_name'].split(' ').map((word)=>word[0].toUpperCase()).join('')
+        if(!fs.existsSync(Path.join(__dirname,`/public/profile/${initials}.png`))){
+            avatar(initials)
+        }
+        res.sendFile(Path.join(__dirname,`/public/profile/${initials}.png`))
     }).catch((error)=>{
         res.json({error:error.message})
     })

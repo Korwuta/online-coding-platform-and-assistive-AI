@@ -1,4 +1,4 @@
-.InfoDialogSection{
+.completionDialogSection{
     position: fixed;
     top: 0;
     left: 0;
@@ -31,13 +31,12 @@
 .content p{
     font-size: 1rem;
 }
-.action{
-    margin-top: 20px;
-    display: flex;
-    place-content: end;
-    padding: 0 25px 20px 25px;
+.participantEndTime{
+    padding-left: 0;
 }
-.action button{
-    font-size: 0.8rem;
-    background-color: #EF4444;
+.participantEndTime li{
+    display: flex;
+    place-items: center;
+    place-content: space-between;
+    padding: 10px 20px;
 }

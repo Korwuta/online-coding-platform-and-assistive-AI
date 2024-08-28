@@ -32,6 +32,7 @@ async function createUserNonLocal({issuer,subject,displayName}){
     }
 
 }
+
 async function findAuthentication({subject,issuer}){
     const res = await pool.
     query(
@@ -42,7 +43,7 @@ async function findAuthentication({subject,issuer}){
 async function getUserById(id){
     const res = await pool.
     query(
-        'SELECT id,display_name FROM "Users" WHERE id=$1',
+        'SELECT id,display_name,email,profile_image FROM "Users" WHERE id=$1',
         [id])
     return res.rows[0]
 }
@@ -77,12 +78,50 @@ async function getTutorial(language,index){
         [language,index])
     return res.rows[0]
 }
-async function getQuestion(language){
+async function getQuestion(language,id){
     const res = await pool.
     query(
-        `SELECT * FROM "Question" WHERE language = $1 ORDER BY RANDOM() LIMIT 5`,
-        [language])
+        `SELECT * FROM "Question" WHERE language = $1 AND question_type = 'MCQ' AND question_id NOT IN  (SELECT question_id FROM "AnsweredQuestion" WHERE user_id = $2) ORDER BY RANDOM() LIMIT 5`,
+        [language,id])
     return res.rows
+}
+async function getContestQuestion(language){
+    const res = await pool.
+    query(
+        `SELECT * FROM "Question" WHERE language = $1 AND question_type = 'CONTEST' ORDER BY RANDOM() `,
+        [language])
+    return res.rows[0]
+}
+async function setAnswer(userId,answer){
+    for (const key of Object.keys(answer)) {
+        try {
+            await pool.query("BEGIN")
+            await pool.query(
+                `INSERT INTO "AnsweredQuestion" 
+            VALUES ($1, $2, $3) 
+            RETURNING *`,
+                [answer[key], key, userId]
+            )
+            await pool.query("COMMIT")
+        } catch (error) {
+            console.error(`Error inserting record for ${key}:`, error);
+        }
+    }
+
+}
+async function getScore(userId){
+    const res = await pool.
+    query(
+        `SELECT user_id,score,(SELECT COUNT(*) AS total FROM "AnsweredQuestion" WHERE user_id=$1) FROM "Score" WHERE user_id=$1`,
+    [userId])
+    return res.rows[0]
+}
+async function updateProfile(id,displayName,profileImage){
+    const res = await pool.
+    query(
+        `UPDATE "Users" SET display_name = $1, profile_image = $2 WHERE id = $3 RETURNING *`,
+        [displayName,profileImage,id])
+    return res.rows[0]
 }
 
 module.exports = {
@@ -94,5 +133,9 @@ module.exports = {
     updatePassword,
     getTopic,
     getTutorial,
-    getQuestion
+    getQuestion,
+    getContestQuestion,
+    setAnswer,
+    getScore,
+    updateProfile
 }
