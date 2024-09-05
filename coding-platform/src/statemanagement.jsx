@@ -91,11 +91,7 @@ const useQuestionStorage = create(
         score:{},
         setScore:(score,userId)=>set(state=>({
             score:{...state.score,[userId]:score}
-        })),
-        total:{},
-        setTotal:(total,userId)=>set(state=>({
-            total:{...state.total,[userId]:total}
-        })),
+        }))
     }),
 )
 export {

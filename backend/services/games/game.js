@@ -3,7 +3,7 @@ const wss = new WebSocketServer({noServer:true})
 const jwt = require('jsonwebtoken')
 const {decode, verify} = require("jsonwebtoken");
 const {isEmpty} = require("lodash/lang.js");
-const {getContestQuestion, getCodeDependency} = require("../../gateways/database");
+const {getContestQuestion, getCodeDependency, addContestScore, addContest} = require("../../gateways/database");
 const {language} = require("googleapis/build/src/apis/language");
 const Path = require("path");
 const fs = require("fs");
@@ -101,6 +101,9 @@ function handleWebSocket(wss){
                         break
                     case 'send-answer':
                         console.log(completeTime)
+                        for(let key in groups[accessToken]){
+                            addContest(key,answer,question_id).then(()=>{}).catch(err=>console.log(err))
+                        }
                         groups[accessToken][id].status = 'finished'
                         groups[accessToken][id].finishTime = completeTime
                         for(let key in groups[accessToken]){
@@ -115,7 +118,9 @@ function handleWebSocket(wss){
                                 if(!Object.keys(groups[accessToken])
                                     .map(id => groups[accessToken][id]?.isWinner)
                                     .some(value=>!!value)){
-                                    console.log('here')
+                                    addContestScore(id).then(()=>{
+
+                                    }).catch(err=>console.log(err))
                                     groups[accessToken][id].isWinner = true
                                     sendToAllParticipants({event:"winner",data:{id:id}},groups[accessToken])
                                 }
@@ -275,11 +280,13 @@ function runJavaScript(userCode){
 }
 
 function containString(string,substring){
-    return string
-        .trim()
-        .split(' ')
-        .join('')
-        .includes(substring.trim().split(' ').join(''))
+    return substring.trim().split(';').every((key)=>{
+        return string
+            .trim()
+            .split(' ')
+            .join('')
+            .includes(key.trim().split(' ').join(''))
+    })
 }
 module.exports = {
     router,

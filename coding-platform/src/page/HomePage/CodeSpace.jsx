@@ -9,7 +9,7 @@ import {useCode} from "../../statemanagement.jsx";
 import TerminalComponent from "./component/Terminal.jsx";
 import LoadingBar from "../../LoadingBar.jsx";
 
-export default function CodeSpace(){
+export default function CodeSpace({defaultLanguage}){
     const [language, setLanguage] =
         useCode((state)=>[state.language,state.setLanguage])
     const [openT, setOpenT] = useState(false)
@@ -18,7 +18,7 @@ export default function CodeSpace(){
     const [code,setCode] =
         useCode((state)=>[state.code,state.setCode])
     useEffect(() => {
-
+        defaultLanguage&&setLanguage(defaultLanguage)
     }, [code]);
     function onRun(){
         console.log(language)
@@ -57,10 +57,10 @@ export default function CodeSpace(){
                     placeItems: 'center',
                     gap: '20px'
                 }}>
-                    <div className={style.language}>
+                    {!defaultLanguage&&<div className={style.language}>
                         language:
                         <Dropdown items={['Python', 'Java', 'JavaScript', 'Python']} value={setLanguage}/>
-                    </div>
+                    </div>}
                     <div className={style.run} onClick={onRun}>
                         Run
                         <img src={debugSVG} alt={'debug'}/>

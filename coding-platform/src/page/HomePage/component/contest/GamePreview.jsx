@@ -42,7 +42,7 @@ export default function(){
         console.log('hidfd')
     }, []);
     function startContest(){
-        sendMessage(JSON.stringify({event:'start-contest',accessToken}))
+        sendMessage(JSON.stringify({event:'start-contest',accessToken,data:{language}}))
     }
     function startSession(){
         sendMessage(JSON.stringify({event:'start-session',accessToken,data:{id:user.id}}))
@@ -154,7 +154,8 @@ export default function(){
                           fill="gainsboro"/>
                 </svg>
                 {time && <Timer time={time || Date.now()} completionFn={()=>{
-                    isEmpty(leaveTime)&&handleSubmission()
+                    console.log(leaveTime)
+                    !leaveTime&&handleSubmission()
                     setOpenCompletionDialog(true,accessToken)
                 }}
                                 completionTime={setCompletionTime}/>}
@@ -175,7 +176,7 @@ export default function(){
             }
 
             <div className={`${styles.codeEditor} ${start&&styles.active}`}>
-                <CodeSpace/>
+                <CodeSpace defaultLanguage={language}/>
             </div>
             {
                   dialog

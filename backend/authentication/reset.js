@@ -57,6 +57,7 @@ app.post('/sendresetlink',(req,res)=>{
             email:row.email,
             subject:'Password Reset',
             token:resetToken,
+            type:'reset',
             url:'http://localhost:5173/reset/',
         }).then((success)=>{
             return res.json({message:`reset link sent to mail`,email:mailer.hashEmail(row.email)})

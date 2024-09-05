@@ -66,7 +66,8 @@ app.post('/registeruser',(req, res)=>{
     mailer.sendMail({
         email:email,
         token:token,
-        subject:"Confirmation",
+        type:'e-confirmation',
+        subject:"Email Verification",
         url:'http://localhost:5173/register/'
     }).then((success)=>{
         return res.json({message:`reset link sent to mail `,email:mailer.hashEmail(email)})

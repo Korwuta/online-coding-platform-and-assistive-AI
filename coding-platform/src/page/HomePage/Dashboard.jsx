@@ -8,7 +8,6 @@ import LoadingBar from "../../LoadingBar.jsx";
 export default function(){
     const [user,setUser] = useUser(state=>([state?.user,state?.setUser]))
     const [score,setScore] = useQuestionStorage(state => [state.score?.[user?.id],state.setScore])
-    const [total,setTotal] = useQuestionStorage(state => [state.total?.[user?.id],state.setTotal])
     const [editProfile,setEditProfile] = useState(false)
     const [loading, setLoading] = useState(false)
     const nameEL = useRef()
@@ -28,8 +27,7 @@ export default function(){
         })
             .then((data) => {
                 console.log(data)
-                setScore(data.output.score,user.id)
-                setTotal(parseInt(data.output.total),user.id)
+                setScore(data.output,user.id)
             })
             .catch((error) => {
                 console.log(error)
@@ -186,7 +184,7 @@ export default function(){
                                 }
                             }
                         }]
-                    }} series={[score/total*100, 0.8]} type="radialBar" height={400}>
+                    }} series={[score?.qascore/parseInt(score?.qatotal)*100||0, score?.contestscore/parseInt(score?.contesttotal)*100||0]} type="radialBar" height={400}>
                     </Chart>
                     <div className={styles.detail}>
                         <label style={{
@@ -194,13 +192,13 @@ export default function(){
                             gap: '20px',
                             fontSize: '0.9rem',
                             placeItems: 'center'
-                        }}><span>QA Score</span><Bar size={score/total*100} color={'#FF4560'}/><span>{score||0}/{total||0}</span></label>
+                        }}><span>QA Score</span><Bar size={score?.qascore/parseInt(score?.qatotal)||0} color={'#FF4560'}/><span>{score?.qascore||0}/{score?.qatotal||0}</span></label>
                         <label style={{
                             display: 'flex',
                             gap: '20px',
                             fontSize: '0.9rem',
                             placeItems: 'center'
-                        }}><span>GameHub Score</span><Bar size={100} color={'#FEB019'}/><span>40/50</span></label>
+                        }}><span>GameHub Score</span><Bar size={score?.contestscore/parseInt(score?.contesttotal)} color={'#FEB019'}/><span>{score?.contestscore||0}/{score?.contesttotal}</span></label>
                         <label></label>
                     </div>
                 </div>

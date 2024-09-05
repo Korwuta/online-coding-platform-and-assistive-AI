@@ -63,7 +63,7 @@ export default function LoginPage(){
                 setLoginError(false)
                 setLoad(false)
                 setUser(data.data)
-                navigate('/home/test')
+                navigate('/home')
             })
             .catch((error) => {
                 setLoginError(true)

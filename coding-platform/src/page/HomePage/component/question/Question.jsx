@@ -5,14 +5,15 @@ import {useParams} from "react-router-dom";
 import {useQuestionStorage, useUser} from "../../../../statemanagement.jsx";
 import {isEmpty, isEqual} from "lodash/lang.js";
 import Timer from "../contest/Timer..jsx";
+import LoadingBar from "../../../../LoadingBar.jsx";
 export default function (){
     const user = useUser(state=>state.user)
     const {language} = useParams()
     const [question, setQuestion] = useState([])
     const [answer, setAnswer] = useState({})
     const hasFetch = useRef(false)
+    const [loading, setLoading] = useState(false)
     const [score,setScore] = useQuestionStorage(state => [state?.score?.[user.id],state?.setScore])
-    const [total,setTotal] = useQuestionStorage(state=>[state?.total?.[user.id],state?.setTotal])
     useEffect(() => {
         if(!hasFetch.current){
            hasFetch.current = true
@@ -27,11 +28,13 @@ export default function (){
         }))
     }
     function getQuestion(){
+        setLoading(true)
         setAnswer({})
         fetch(`http://localhost:3000/services/question/${language}/${user.id}`,{
             method:'GET',
             credentials:'include'
         }).then((response) => {
+            setLoading(false)
             if(!response.ok){
                 return response.json().then((data)=>{
                     throw new Error(data.error)
@@ -61,8 +64,7 @@ export default function (){
         })
             .then((data) => {
                 console.log(data)
-                setScore(data.output.score,user.id)
-                setTotal(data.output.total,user.id)
+                setScore(data.output,user.id)
             })
             .catch((error) => {
                 console.log(error)
@@ -72,6 +74,7 @@ export default function (){
         e.preventDefault()
     }
     function submitAnswer(){
+        setLoading(true)
         fetch(`http://localhost:3000/services/mark-answer`,{
             method: 'POST',
             body: JSON.stringify({answer,userId:user.id}),
@@ -81,6 +84,7 @@ export default function (){
                 'Content-Type': 'application/json',
             },
         }).then((response) => {
+
             if(!response.ok){
                 return response.json().then((data)=>{
                     throw new Error(data.error)
@@ -103,7 +107,7 @@ export default function (){
                     <p style={{
                     }}><span style={{
                         color:"forestgreen",
-                    }}>{score||0}</span>/{total||0}</p>
+                    }}>{score?.qascore||0}</span>/{score?.qatotal||0}</p>
                 </div>
                 <h2>Programming Question</h2>
                 {
@@ -123,6 +127,7 @@ export default function (){
                     </>
                 }
             </form>
+            {loading&&<LoadingBar/>}
         </>
     )
 }

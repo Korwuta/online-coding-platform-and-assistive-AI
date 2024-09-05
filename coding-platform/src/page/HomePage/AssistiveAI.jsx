@@ -19,7 +19,7 @@ export default function AssistiveAI(){
     function sendPrompt(){
         setLoad(true)
         setPrompt('')
-        fetch(' http://127.0.0.1:5000/api/generate',{
+        fetch('http://127.0.0.1:5000/generate_code',{
             method:'POST',
             body:JSON.stringify({prompt}),
             headers:{
@@ -28,7 +28,7 @@ export default function AssistiveAI(){
         }).then(response=>response.json()).then((data)=>{
             console.log(data)
             setLoad(false)
-            setComponentList(<RequestCard prompt={prompt} result={data.response}/>)
+            setComponentList(<RequestCard prompt={prompt} result={data.generated_code}/>)
         }).catch(error=>{
             setLoad(false)
             setComponentList(<RequestCard prompt={prompt} result={'Request Failed, retry again'}/>)
